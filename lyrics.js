@@ -15,6 +15,12 @@ window.SECTIONS = [
   { title: "Section 10", from: 84, to: 88 },
 ];
 
+// Extra La-ilaha-ill-Allah ("chorus") or Salawat ("salawat") buttons, placed after a line number.
+window.INSERTS = {
+  1: "salawat",
+  34: "chorus",
+};
+
 window.LYRICS = {
   chorus: "",
   salawat: "",
