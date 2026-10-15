@@ -3,285 +3,356 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Seerah Practice</title>
+<title>My Seerah Poem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap">
 <style>
   :root {
-    --bg: #f6f4ef; --card: #ffffff; --text: #1f1d1a; --muted: #6b665e;
-    --accent: #c2410c; --accent-soft: #fde7da; --line: #e4e0d7; --playing: #15803d;
-    --chorus: #7c3aed; --chorus-soft: #ede4fd;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg: #171614; --card: #22201d; --text: #f1eee8; --muted: #a39d93;
-      --accent: #fb923c; --accent-soft: #3b2417; --line: #35322d; --playing: #4ade80;
-      --chorus: #c4b5fd; --chorus-soft: #2e2440; }
+    --bg: #fff8ec; --card: #ffffff; --text: #2b2440; --muted: #7a7290;
+    --line: #f0e4cf; --play: #22c55e; --chorus: #8b5cf6; --chorus-soft: #efe7ff;
+    --gold: #f59e0b;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
-    font: 16px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
-  main { max-width: 820px; margin: 0 auto; padding: 24px 16px 24px; }
-  h1 { font-size: 1.6rem; margin: 0 0 4px; }
-  h2 { font-size: 1.05rem; margin: 0 0 12px; }
-  .sub { color: var(--muted); margin: 0 0 20px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
-  button, select, input { font: inherit; color: inherit; }
-  button { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 8px 12px; cursor: pointer; }
-  button:hover { border-color: var(--accent); }
-  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
-  button.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
-  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-  .seg button { border: none; border-radius: 0; }
-  .choruses { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .choruses button { padding: 16px; font-weight: 700; font-size: 1.05rem; background: var(--chorus-soft); border-color: var(--chorus); color: var(--chorus); }
-  .parts { display: grid; grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: 6px; }
-  .parts button { padding: 12px 0; font-weight: 600; font-variant-numeric: tabular-nums; }
-  button.playing { outline: 3px solid var(--playing); outline-offset: 1px; }
-  .addmode .parts button:hover, .addmode .choruses button:hover { background: var(--accent-soft); }
-  .queue { display: flex; flex-wrap: wrap; gap: 6px; min-height: 40px; margin-bottom: 12px; }
-  .chip { display: inline-flex; align-items: center; gap: 2px; background: var(--accent-soft);
-    border-radius: 999px; padding: 4px 4px 4px 12px; font-size: .9rem; }
-  .chip.ch { background: var(--chorus-soft); color: var(--chorus); font-weight: 600; }
-  .chip.playing { outline: 2px solid var(--playing); }
-  .chip button { border: none; background: transparent; padding: 2px 8px; border-radius: 999px; }
-  .empty { color: var(--muted); font-size: .9rem; }
-  .now { position: sticky; bottom: 8px; box-shadow: 0 6px 24px rgba(0,0,0,.12); }
-  #status { font-weight: 600; }
-  progress { width: 100%; height: 8px; accent-color: var(--accent); }
-  label { color: var(--muted); font-size: .9rem; }
-  input[type=number] { width: 64px; padding: 6px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
-  #err { color: #b91c1c; }
+    font: 18px/1.4 "Fredoka", "Comic Sans MS", system-ui, sans-serif;
+    background-image: radial-gradient(#f6dfb3 1.2px, transparent 1.2px); background-size: 26px 26px; }
+  main { max-width: 760px; margin: 0 auto; padding: 20px 16px 170px; }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; border: none; background: none; -webkit-tap-highlight-color: transparent; }
+  .hidden { display: none !important; }
+
+  /* Home */
+  .hero { text-align: center; margin: 8px 0 22px; }
+  .hero .moon { font-size: 3.2rem; display: inline-block; animation: bob 3s ease-in-out infinite; }
+  .hero h1 { font-size: 2.2rem; margin: 4px 0 2px; font-weight: 700; }
+  .hero p { margin: 0; color: var(--muted); }
+  @keyframes bob { 50% { transform: translateY(-6px) rotate(-6deg); } }
+
+  .label { font-weight: 600; color: var(--muted); margin: 18px 4px 10px; font-size: 1rem; }
+  .choruses { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .sections { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  .sec { --c: #ef4444; position: relative; background: var(--card); border-radius: 22px; padding: 16px 12px 14px;
+    text-align: center; border: 3px solid var(--c); box-shadow: 0 6px 0 var(--c); transition: transform .1s; }
+  .sec:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--c); }
+  .sec .num { width: 58px; height: 58px; border-radius: 50%; background: var(--c); color: #fff; font-weight: 700;
+    font-size: 1.7rem; display: grid; place-items: center; margin: 0 auto 8px; }
+  .sec .t { font-weight: 600; font-size: 1.1rem; }
+  .sec .n { color: var(--muted); font-size: .9rem; }
+  .sec .stars { position: absolute; top: 8px; right: 10px; font-size: .85rem; }
+
+  /* Section page */
+  .top { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .home { background: var(--card); border-radius: 16px; padding: 10px 16px; font-weight: 600; border: 3px solid var(--line); }
+  .sectitle { flex: 1; font-size: 1.6rem; font-weight: 700; margin: 0; color: var(--c); }
+  .sectitle input { width: 100%; font-weight: 700; color: inherit; border: 2px dashed var(--c); border-radius: 12px; padding: 4px 8px; background: #fff; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+  .big { flex: 1; min-width: 140px; border-radius: 18px; padding: 14px 16px; font-weight: 700; font-size: 1.1rem;
+    background: var(--c); color: #fff; box-shadow: 0 5px 0 rgba(0,0,0,.18); }
+  .big.alt { background: var(--card); color: var(--c); border: 3px solid var(--c); }
+  .big.on { background: var(--gold); color: #fff; border-color: var(--gold); }
+  .big:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.18); }
+  .hint { background: #fff3c4; border-radius: 14px; padding: 10px 14px; margin: -4px 0 14px; font-size: .95rem; }
+
+  .lines { display: grid; gap: 10px; }
+  .lineCard { --c2: var(--c); display: flex; align-items: center; gap: 12px; width: 100%; text-align: start;
+    background: var(--card); border-radius: 18px; padding: 12px 14px; border: 3px solid var(--line);
+    box-shadow: 0 4px 0 var(--line); transition: transform .1s; position: relative; }
+  .lineCard:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }
+  .lineCard .bubble { flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--c2); color: #fff;
+    display: grid; place-items: center; font-weight: 700; font-size: 1.15rem; }
+  .lineCard .words { flex: 1; font-size: 1.15rem; font-weight: 500; white-space: pre-line; }
+  .lineCard .words.empty { color: var(--muted); }
+  .lineCard .icon { flex: none; font-size: 1.4rem; }
+  .lineCard.chorus { --c2: var(--chorus); background: var(--chorus-soft); border-color: #dccbff; box-shadow: 0 4px 0 #dccbff; }
+  .lineCard.playing { border-color: var(--play); box-shadow: 0 4px 0 var(--play); animation: pulse 1.2s ease-in-out infinite; }
+  @keyframes pulse { 50% { transform: scale(1.015); } }
+  .lineCard .pick { position: absolute; top: -8px; right: -6px; background: var(--gold); color: #fff; font-weight: 700;
+    border-radius: 999px; min-width: 30px; height: 30px; display: grid; place-items: center; padding: 0 8px; font-size: .95rem; }
+  .lineCard textarea { flex: 1; min-height: 52px; resize: vertical; border: 2px dashed var(--c2); border-radius: 12px; padding: 6px 10px; background: #fff; }
+
+  /* Player bar */
+  .player { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 3px solid var(--line);
+    box-shadow: 0 -6px 20px rgba(0,0,0,.08); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+  .player .inner { max-width: 760px; margin: 0 auto; }
+  .now { display: flex; justify-content: space-between; gap: 10px; font-weight: 600; margin-bottom: 6px; }
+  .now .what { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar { height: 10px; background: var(--line); border-radius: 999px; overflow: hidden; margin-bottom: 10px; }
+  .bar div { height: 100%; width: 0; background: var(--play); border-radius: 999px; transition: width .2s linear; }
+  .ctrls { display: flex; gap: 8px; }
+  .ctrl { flex: 1; border-radius: 14px; padding: 10px 4px; background: #f6f1e7; font-weight: 600; font-size: .95rem; }
+  .ctrl .e { display: block; font-size: 1.4rem; line-height: 1.1; }
+  .ctrl.on { background: #dcfce7; color: #166534; }
+
+  .grown { text-align: center; margin-top: 30px; }
+  .grown button { color: var(--muted); font-size: .9rem; text-decoration: underline; }
+  .editbar { background: #fff3c4; border-radius: 16px; padding: 12px 14px; margin-bottom: 16px; font-size: .95rem; }
+  .editbar .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .editbar button { background: #fff; border-radius: 12px; padding: 8px 12px; font-weight: 600; border: 2px solid #f0d78a; }
+  #err { color: #b91c1c; font-size: .9rem; }
 </style>
 </head>
 <body>
-<main>
-  <h1>Seerah Practice</h1>
-  <p class="sub">Tap a clip to play it. Build a group to play several in a row and loop them.</p>
+<main id="app"></main>
 
-  <div class="card" id="clipsCard">
-    <div class="row" style="justify-content:space-between;margin-bottom:14px">
-      <h2 style="margin:0">Clips</h2>
-      <div class="row"><label>Tapping a clip will</label>
-        <div class="seg"><button id="modePlay" class="on">▶ Play it</button><button id="modeAdd">+ Add to group</button></div>
-      </div>
-    </div>
-    <div class="choruses" id="choruses"></div>
-    <div class="parts" id="parts"></div>
-  </div>
-
-  <div class="card">
-    <h2>Group</h2>
-    <div class="queue" id="queue"></div>
-    <div class="row" style="margin-bottom:10px">
-      <label>Add parts</label>
-      <input type="number" id="from" min="1" max="88" value="1"> <label>to</label>
-      <input type="number" id="to" min="1" max="88" value="5">
-      <button id="addRange">Add</button>
-    </div>
-    <div class="row">
-      <button class="primary" id="playGroup">▶ Play group</button>
-      <button id="undo">Remove last</button>
-      <button id="clearGroup">Clear</button>
-    </div>
-  </div>
-
-  <div class="card now">
-    <div class="row" style="justify-content:space-between;margin-bottom:8px">
-      <span id="status">Stopped</span>
-      <span id="count" class="empty"></span>
-    </div>
-    <progress id="prog" value="0" max="1"></progress>
-    <div class="row" style="margin-top:10px">
-      <button id="pause">⏸ Pause</button>
-      <button id="stop">⏹ Stop</button>
-      <button id="repeat" class="on">🔁 Repeat: on</button>
-      <label>Gap <select id="gap">
-        <option value="0">none</option><option value="1" selected>1s</option>
-        <option value="2">2s</option><option value="3">3s</option></select></label>
-      <label>Speed <select id="speed">
-        <option value="0.5">0.5×</option><option value="0.75">0.75×</option>
-        <option value="1" selected>1×</option><option value="1.25">1.25×</option></select></label>
+<div class="player">
+  <div class="inner">
+    <div class="now"><span class="what" id="what">Tap a line to listen 🎧</span><span id="stars"></span></div>
+    <div class="bar"><div id="prog"></div></div>
+    <div class="ctrls">
+      <button class="ctrl" id="pause"><span class="e">⏸️</span><span>Pause</span></button>
+      <button class="ctrl" id="stop"><span class="e">⏹️</span><span>Stop</span></button>
+      <button class="ctrl on" id="repeat"><span class="e">🔁</span><span>Repeat</span></button>
+      <button class="ctrl" id="slow"><span class="e">🐢</span><span>Slow</span></button>
     </div>
     <div id="err"></div>
   </div>
-</main>
+</div>
 
+<script src="lyrics.js"></script>
 <script>
 const $ = id => document.getElementById(id);
+const COLORS = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#0ea5e9', '#6366f1', '#a855f7', '#ec4899', '#84cc16'];
+const SECTIONS = window.SECTIONS || [];
+const BASE = window.LYRICS || {};
+const CHORUSES = [
+  { key: 'chorus', name: 'Chorus', emoji: '🎵', file: 'clips/Chorus.mp3' },
+  { key: 'salawat', name: 'Salawat', emoji: '🌙', file: 'clips/Salawat.mp3' },
+];
+
+const fileFor = key => CHORUSES.find(c => c.key === key)?.file || `clips/Trim_Seerah_${key}.mp3`;
+const nameFor = key => CHORUSES.find(c => c.key === key)?.name || `Line ${key}`;
+
+// ---------- grown-up edits (kept in this browser) ----------
+let edits = { lyrics: {}, titles: {} };
+try { edits = Object.assign(edits, JSON.parse(localStorage.getItem('seerahEdits') || '{}')); } catch {}
+const saveEdits = () => { try { localStorage.setItem('seerahEdits', JSON.stringify(edits)); } catch {} };
+const lyric = key => (edits.lyrics[key] ?? BASE[key] ?? '').trim();
+const title = i => edits.titles[i] ?? SECTIONS[i].title;
+
+let stars = {};
+try { stars = JSON.parse(localStorage.getItem('seerahStars') || '{}'); } catch {}
+const saveStars = () => { try { localStorage.setItem('seerahStars', JSON.stringify(stars)); } catch {} };
+
+let editing = false;
+let choosing = false;
+let chosen = [];
+
+// ---------- pages ----------
+function route() {
+  const m = location.hash.match(/^#section-(\d+)$/);
+  const i = m ? +m[1] - 1 : -1;
+  choosing = false; chosen = [];
+  if (SECTIONS[i]) renderSection(i); else renderHome();
+  window.scrollTo(0, 0);
+}
+
+function renderHome() {
+  const app = $('app');
+  app.style.removeProperty('--c');
+  app.innerHTML = `
+    <div class="hero"><span class="moon">🌙</span><h1>My Seerah Poem</h1><p>Pick a section and start learning!</p></div>
+    ${editBar()}
+    <div class="label">🎶 Sing along</div>
+    <div class="choruses" id="choruses"></div>
+    <div class="label">📖 Sections</div>
+    <div class="sections" id="sections"></div>
+    <div class="grown"><button id="grown">${editing ? 'Done editing' : '✏️ Grown-ups: add lyrics'}</button></div>`;
+  CHORUSES.forEach(c => $('choruses').append(lineCard(c.key, true)));
+  SECTIONS.forEach((s, i) => {
+    const a = document.createElement('a');
+    a.href = `#section-${i + 1}`;
+    a.style.textDecoration = 'none'; a.style.color = 'inherit';
+    const n = s.to - s.from + 1;
+    const st = stars[i] ? '⭐'.repeat(Math.min(3, stars[i])) : '';
+    a.innerHTML = `<div class="sec" style="--c:${COLORS[i % COLORS.length]}">
+      <span class="stars">${st}</span>
+      <div class="num">${i + 1}</div><div class="t">${esc(title(i))}</div><div class="n">${n} lines</div></div>`;
+    $('sections').append(a);
+  });
+  wireEditBar();
+  $('grown').onclick = () => { editing = !editing; route(); };
+  paintPlaying();
+}
+
+function renderSection(i) {
+  const s = SECTIONS[i];
+  const app = $('app');
+  app.style.setProperty('--c', COLORS[i % COLORS.length]);
+  app.innerHTML = `
+    <div class="top">
+      <a class="home" href="#">🏠 Home</a>
+      <h2 class="sectitle">${editing ? `<input id="titleIn" value="${esc(title(i))}">` : esc(title(i))}</h2>
+    </div>
+    ${editBar()}
+    <div class="actions ${editing ? 'hidden' : ''}">
+      <button class="big" id="playAll">▶️ Play whole section</button>
+      <button class="big alt ${choosing ? 'on' : ''}" id="choose">${choosing ? (chosen.length ? `▶️ Play my ${chosen.length}` : '⭐ Tap lines to pick') : '⭐ Pick my lines'}</button>
+    </div>
+    ${choosing ? '<div class="hint">Tap the lines you want, in the order you want. You can add the chorus too! Then press <b>Play my lines</b>. <button id="cancelPick" style="text-decoration:underline">Cancel</button></div>' : ''}
+    <div class="lines" id="lines"></div>
+    <div class="label">🎶 Sing along</div>
+    <div class="lines" id="chorusLines"></div>
+    <div class="grown"><button id="grown">${editing ? 'Done editing' : '✏️ Grown-ups: add lyrics'}</button></div>`;
+  for (let n = s.from; n <= s.to; n++) $('lines').append(lineCard(String(n), false, n));
+  CHORUSES.forEach(c => $('chorusLines').append(lineCard(c.key, true)));
+
+  $('grown').onclick = () => { editing = !editing; renderSection(i); };
+  wireEditBar();
+  if (editing) {
+    $('titleIn').oninput = e => { edits.titles[i] = e.target.value; saveEdits(); };
+  } else {
+    const keys = [];
+    for (let n = s.from; n <= s.to; n++) keys.push(String(n));
+    $('playAll').onclick = () => playList(keys, title(i), i);
+    $('choose').onclick = () => {
+      if (choosing && chosen.length) { playList([...chosen], 'My lines', i); choosing = false; chosen = []; renderSection(i); return; }
+      choosing = true; renderSection(i);
+    };
+    $('cancelPick')?.addEventListener('click', () => { choosing = false; chosen = []; renderSection(i); });
+  }
+  paintPlaying();
+}
+
+function lineCard(key, isChorus, shownNum) {
+  const c = CHORUSES.find(x => x.key === key);
+  if (editing) {
+    const div = document.createElement('div');
+    div.className = 'lineCard' + (isChorus ? ' chorus' : '');
+    div.innerHTML = `<span class="bubble">${c ? c.emoji : shownNum}</span>`;
+    const ta = document.createElement('textarea');
+    ta.dir = 'auto';
+    ta.placeholder = `Type the words for ${nameFor(key)}…`;
+    ta.value = lyric(key);
+    ta.oninput = () => { edits.lyrics[key] = ta.value; saveEdits(); };
+    const listen = document.createElement('button');
+    listen.className = 'icon'; listen.textContent = '🔊'; listen.title = 'Listen';
+    listen.onclick = () => playList([key], nameFor(key));
+    div.append(ta, listen);
+    return div;
+  }
+  const b = document.createElement('button');
+  b.className = 'lineCard' + (isChorus ? ' chorus' : '');
+  b.dataset.key = key;
+  const words = lyric(key);
+  const picks = chosen.map((k, j) => k === key ? j + 1 : 0).filter(Boolean);
+  b.innerHTML = `<span class="bubble">${c ? c.emoji : shownNum}</span>
+    <span class="words ${words ? '' : 'empty'}" dir="auto">${words ? esc(words) : esc(nameFor(key))}</span>
+    <span class="icon">${choosing ? '⭐' : '▶️'}</span>
+    ${picks.length ? `<span class="pick">${picks.join(', ')}</span>` : ''}`;
+  b.onclick = () => {
+    if (choosing) {
+      chosen.push(key);
+      const m = location.hash.match(/^#section-(\d+)$/);
+      renderSection(+m[1] - 1);
+    } else {
+      playList([key], words ? nameFor(key) : nameFor(key));
+    }
+  };
+  return b;
+}
+
+function editBar() {
+  if (!editing) return '';
+  return `<div class="editbar">✏️ <b>Grown-up mode:</b> type the words into each line. They save in this browser straight away.
+    To show them for everyone, download the lyrics file and send it to whoever looks after the website.
+    <div class="row"><button id="dl">⬇️ Download lyrics file</button><button id="resetEdits">Clear my typing</button></div></div>`;
+}
+
+function wireEditBar() {
+  if (!editing) return;
+  $('dl').onclick = downloadLyrics;
+  $('resetEdits').onclick = () => {
+    if (confirm('Clear everything typed in this browser?')) { edits = { lyrics: {}, titles: {} }; saveEdits(); route(); }
+  };
+}
+
+function downloadLyrics() {
+  const q = s => JSON.stringify(s);
+  let out = '// Section titles and lyrics for the Seerah poem.\n// Type each line\'s words between the quotes. Leave it empty ("") to just show the line number.\n\nwindow.SECTIONS = [\n';
+  SECTIONS.forEach((s, i) => { out += `  { title: ${q(title(i))}, from: ${s.from}, to: ${s.to} },\n`; });
+  out += '];\n\nwindow.LYRICS = {\n';
+  out += `  chorus: ${q(lyric('chorus'))},\n  salawat: ${q(lyric('salawat'))},\n`;
+  const last = SECTIONS.length ? SECTIONS[SECTIONS.length - 1].to : 0;
+  for (let n = 1; n <= last; n++) out += `  ${n}: ${q(lyric(String(n)))},\n`;
+  out += '};\n';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([out], { type: 'text/javascript' }));
+  a.download = 'lyrics.js';
+  a.click();
+}
+
+function esc(s) { return String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch])); }
+
+// ---------- player ----------
 const audio = new Audio();
 audio.preservesPitch = true;
+let list = [], pos = -1, listName = '', listSection = -1;
+let repeat = true, slow = false, loops = 0, gapTimer = null;
 
-const PARTS = 88;
-const clips = [
-  { name: 'Chorus', file: 'clips/Chorus.mp3', chorus: true },
-  { name: 'Salawat', file: 'clips/Salawat.mp3', chorus: true },
-];
-for (let n = 1; n <= PARTS; n++) clips.push({ name: 'Part ' + n, short: String(n), file: `clips/Trim_Seerah_${n}.mp3` });
-const partIndex = n => n + 1;   // Part n lives at clips[n + 1]
-
-let queue = load();      // clip indexes; the same clip can appear more than once
-let addMode = false;
-let mode = null;         // 'single' | 'group'
-let current = -1;        // clip index (single) or queue position (group)
-let repeat = true;
-let loopCount = 0;
-let gapTimer = null;
-
-function load() {
-  try { const q = JSON.parse(localStorage.getItem('seerahGroup') || '[]'); return q.filter(i => clips[i]); }
-  catch { return []; }
-}
-function save() { try { localStorage.setItem('seerahGroup', JSON.stringify(queue)); } catch {} }
-
-// Build the clip buttons once
-const buttons = clips.map((c, i) => {
-  const b = document.createElement('button');
-  b.textContent = c.chorus ? c.name : c.short;
-  b.title = c.name;
-  b.onclick = () => addMode ? addToGroup(i) : playSingle(i);
-  (c.chorus ? $('choruses') : $('parts')).append(b);
-  return b;
-});
-
-function addToGroup(...idx) { queue.push(...idx); save(); render(); }
-
-function setAddMode(on) {
-  addMode = on;
-  $('modePlay').classList.toggle('on', !on);
-  $('modeAdd').classList.toggle('on', on);
-  $('clipsCard').classList.toggle('addmode', on);
+function playList(keys, name, sectionIndex = -1) {
+  list = keys; pos = 0; listName = name; listSection = sectionIndex; loops = 0;
+  start();
 }
 
-function playingClip() {
-  if (mode === 'single') return current;
-  if (mode === 'group') return queue[current];
-  return -1;
-}
-
-function render() {
-  const p = playingClip();
-  buttons.forEach((b, i) => b.classList.toggle('playing', i === p));
-
-  $('queue').innerHTML = '';
-  if (!queue.length) {
-    $('queue').innerHTML = '<span class="empty">Switch to “+ Add to group” and tap clips in the order you want, or add a range of parts below. A clip can go in more than once.</span>';
-  }
-  queue.forEach((ci, pos) => {
-    const chip = document.createElement('span');
-    chip.className = 'chip' + (clips[ci].chorus ? ' ch' : '') + (mode === 'group' && current === pos ? ' playing' : '');
-    chip.append(clips[ci].name);
-    const x = document.createElement('button');
-    x.textContent = '×';
-    x.title = 'Remove';
-    x.onclick = () => removeAt(pos);
-    chip.append(x);
-    $('queue').append(chip);
-  });
-
-  let status = 'Stopped';
-  if (mode === 'single') status = clips[current].name;
-  if (mode === 'group') status = `Group: ${clips[queue[current]].name} (${current + 1} of ${queue.length})`;
-  if (gapTimer) status += ' — next in a moment…';
-  else if (mode && audio.paused) status = 'Paused — ' + status;
-  $('status').textContent = status;
-  $('count').textContent = mode && loopCount ? `played ${loopCount}×` : '';
-  $('pause').textContent = mode && audio.paused && !gapTimer ? '▶ Resume' : '⏸ Pause';
-}
-
-function removeAt(pos) {
-  queue.splice(pos, 1);
-  save();
-  if (mode === 'group') {
-    if (!queue.length) return stop();
-    if (pos < current) current--;
-    else if (pos === current) { current = Math.min(current, queue.length - 1); start(clips[queue[current]].file); return; }
-  }
-  render();
-}
-
-function start(file) {
+function start() {
   clearTimeout(gapTimer); gapTimer = null;
   $('err').textContent = '';
-  audio.src = file;
-  audio.playbackRate = +$('speed').value;
+  audio.src = fileFor(list[pos]);
+  audio.playbackRate = slow ? 0.75 : 1;
   audio.play().catch(() => {});
-  render();
-}
-
-function playSingle(i) { mode = 'single'; current = i; loopCount = 0; start(clips[i].file); }
-
-function playGroup() {
-  if (!queue.length) return;
-  mode = 'group'; current = 0; loopCount = 0;
-  start(clips[queue[0]].file);
+  paintPlaying();
 }
 
 function stop() {
   clearTimeout(gapTimer); gapTimer = null;
   audio.pause(); audio.removeAttribute('src'); audio.load();
-  mode = null; current = -1; loopCount = 0;
-  $('prog').value = 0;
-  render();
-}
-
-function afterGap(fn) {
-  const gap = +$('gap').value * 1000;
-  if (!gap) return fn();
-  gapTimer = setTimeout(() => { gapTimer = null; fn(); }, gap);
-  render();
+  list = []; pos = -1; loops = 0;
+  $('prog').style.width = '0';
+  paintPlaying();
 }
 
 audio.addEventListener('ended', () => {
-  if (mode === 'single') {
-    loopCount++;
-    if (repeat) afterGap(() => start(clips[current].file)); else render();
-  } else if (mode === 'group') {
-    if (current < queue.length - 1) {
-      current++;
-      start(clips[queue[current]].file);
-    } else {
-      loopCount++;
-      if (repeat) afterGap(() => { current = 0; start(clips[queue[0]].file); }); else render();
-    }
-  }
+  if (pos < list.length - 1) { pos++; start(); return; }
+  loops++;
+  if (list.length > 1 && listSection >= 0) { stars[listSection] = (stars[listSection] || 0) + 1; saveStars(); }
+  if (repeat) { gapTimer = setTimeout(() => { gapTimer = null; pos = 0; start(); }, 1000); }
+  paintPlaying();
 });
 audio.addEventListener('timeupdate', () => {
-  $('prog').max = audio.duration || 1;
-  $('prog').value = audio.currentTime || 0;
+  $('prog').style.width = audio.duration ? (100 * audio.currentTime / audio.duration) + '%' : '0';
 });
 audio.addEventListener('error', () => {
-  if (audio.getAttribute('src')) $('err').textContent = `Couldn't find ${audio.getAttribute('src')} — keep this page in the same folder as the "clips" folder.`;
+  if (audio.getAttribute('src')) $('err').textContent = `Oops, couldn't find ${audio.getAttribute('src')}`;
 });
 
-$('modePlay').onclick = () => setAddMode(false);
-$('modeAdd').onclick = () => setAddMode(true);
-$('addRange').onclick = () => {
-  let a = Math.max(1, Math.min(PARTS, +$('from').value || 1));
-  let b = Math.max(1, Math.min(PARTS, +$('to').value || a));
-  const step = a <= b ? 1 : -1, idx = [];
-  for (let n = a; n !== b + step; n += step) idx.push(partIndex(n));
-  addToGroup(...idx);
-};
-$('playGroup').onclick = playGroup;
-$('undo').onclick = () => { if (queue.length) removeAt(queue.length - 1); };
-$('clearGroup').onclick = () => { if (mode === 'group') stop(); queue = []; save(); render(); };
-$('stop').onclick = stop;
+function paintPlaying() {
+  const key = pos >= 0 ? list[pos] : null;
+  document.querySelectorAll('.lineCard[data-key]').forEach(el => el.classList.toggle('playing', el.dataset.key === key && !audio.paused));
+  let what = 'Tap a line to listen 🎧';
+  if (key) {
+    what = list.length > 1 ? `${listName}: ${nameFor(key)} (${pos + 1} of ${list.length})` : nameFor(key);
+    if (gapTimer) what = '🎉 Again!';
+    else if (audio.paused) what = '⏸️ ' + what;
+  }
+  $('what').textContent = what;
+  $('stars').textContent = key && loops ? '⭐'.repeat(Math.min(loops, 5)) + (loops > 5 ? ` ×${loops}` : '') : '';
+  $('pause').innerHTML = key && audio.paused && !gapTimer
+    ? '<span class="e">▶️</span><span>Play</span>' : '<span class="e">⏸️</span><span>Pause</span>';
+}
+audio.addEventListener('play', paintPlaying);
+audio.addEventListener('pause', paintPlaying);
+
 $('pause').onclick = () => {
-  if (!mode) return;
-  if (gapTimer) { clearTimeout(gapTimer); gapTimer = null; render(); return; }
+  if (pos < 0) return;
+  if (gapTimer) { clearTimeout(gapTimer); gapTimer = null; paintPlaying(); return; }
   if (audio.paused) audio.play(); else audio.pause();
-  render();
 };
-$('repeat').onclick = () => {
-  repeat = !repeat;
-  $('repeat').classList.toggle('on', repeat);
-  $('repeat').textContent = '🔁 Repeat: ' + (repeat ? 'on' : 'off');
-};
-$('speed').onchange = () => { audio.playbackRate = +$('speed').value; };
-document.addEventListener('keydown', e => {
-  if (e.code === 'Space' && !['SELECT', 'INPUT', 'BUTTON'].includes(e.target.tagName)) { e.preventDefault(); $('pause').click(); }
-});
+$('stop').onclick = stop;
+$('repeat').onclick = () => { repeat = !repeat; $('repeat').classList.toggle('on', repeat); };
+$('slow').onclick = () => { slow = !slow; audio.playbackRate = slow ? 0.75 : 1; $('slow').classList.toggle('on', slow); };
 
-render();
+window.addEventListener('hashchange', route);
+route();
 </script>
 </body>
 </html>
