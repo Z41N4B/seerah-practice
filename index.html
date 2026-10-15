@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>My Seerah Poem</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@1,500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap">
 <style>
   :root {
     --bg: #fff8ec; --card: #ffffff; --text: #2b2440; --muted: #7a7290;
@@ -14,7 +14,7 @@
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
-    font: 17px/1.45 "Poppins", system-ui, "Segoe UI", sans-serif;
+    font: 18px/1.4 "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
     background-image: radial-gradient(#f6dfb3 1.2px, transparent 1.2px); background-size: 26px 26px; }
   main { max-width: 760px; margin: 0 auto; padding: 20px 16px 170px; }
   button, input, textarea { font: inherit; color: inherit; }
@@ -61,7 +61,9 @@
   .lineCard .bubble { flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--c2); color: #fff;
     display: grid; place-items: center; font-weight: 700; font-size: 1.15rem; }
   .lineCard .words { flex: 1; font-size: 1.15rem; font-weight: 500; white-space: pre-line; }
-  .lineCard .words:not(.empty) { font-family: "Lora", Georgia, serif; font-style: italic; font-size: 1.2rem; }
+  .lineCard .words { font-style: italic; }
+  .lineCard .words:not(.empty) { font-size: 1.2rem; }
+  .lineCard textarea { font-style: italic; }
   .lineCard .words.empty { color: var(--muted); }
   .bubble svg { width: 30px; height: 30px; display: block; }
   .lineCard .icon { flex: none; font-size: 1.4rem; }
