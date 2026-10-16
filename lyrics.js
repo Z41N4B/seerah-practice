@@ -107,8 +107,8 @@ window.LYRICS = {
   84: "Never should we think that by these words the Prophet has been praised;\nRather through his bless-ed mention, it’s our words that have been raised.",
   85: "For Allah Himself has praised him, when He said so perfectly\n{Truly, you are on a station of sublime integrity!}",
   86: "Joyous tidings to those who believed when he called to Allah;\nSince he was the best of prophets, we became the best Ummah!",
-  87: "",
-  88: "",
+  87: "More belov-ed than our parents is our dear Rasulullah,\nAllahumma send your blessings on the seal of Anbiya.",
+  88: "Allahumma grant us Jannah with Nabiy- Al Mustafa,\nالصلاة والسلام عليك خير خلق الله.",
   chorus: "",
   salawat: "",
 };
