@@ -46,6 +46,9 @@
   .sec:active { transform: scale(.98); }
   .sec .num { width: 48px; height: 48px; border-radius: 12px; background: var(--c); color: #fff; font-weight: 700;
     font-size: 1.4rem; display: grid; place-items: center; flex: none; }
+  .sec .num { color: var(--on, #fff); }
+  .lineCard:not(.chorus) .bubble { color: var(--on, #fff); }
+  .big:not(.alt):not(.on) { color: var(--on, #fff); }
   .sec .t { font-weight: 700; font-size: 1.15rem; line-height: 1.2; }
   .sec .n { color: var(--muted); font-size: .9rem; }
   .sec .stars { position: absolute; top: 8px; right: 10px; font-size: .8rem; font-weight: 700; color: var(--muted); }
@@ -145,7 +148,9 @@
 <script src="lyrics.js"></script>
 <script>
 const $ = id => document.getElementById(id);
-const COLORS = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#0ea5e9', '#6366f1', '#a855f7', '#ec4899', '#84cc16'];
+const COLORS = ['#ef4444', '#f97316', '#facc15', '#22c55e', '#14b8a6', '#0ea5e9', '#6366f1', '#a855f7', '#ec4899', '#84cc16'];
+// Text colour to use on top of each section colour (dark on the bright yellow so it stays readable)
+const onColor = i => COLORS[i % COLORS.length] === '#facc15' ? '#3b2f00' : '#fff';
 const SECTIONS = window.SECTIONS || [];
 const BASE = window.LYRICS || {};
 const KAABA = `<svg viewBox="0 0 32 32" aria-label="Kaaba"><path d="M5 10 16 6l11 4v15l-11 4-11-4z" fill="#1c1917"/><path d="M16 6v23" stroke="#44403c" stroke-width="1"/><path d="M5 13.5 16 17.5l11-4v2.6L16 20.1 5 16.1z" fill="#eab308"/><rect x="19" y="20.5" width="4" height="6" rx=".6" transform="skewY(-20)" transform-origin="21 23" fill="#ca8a04"/></svg>`;
@@ -194,6 +199,7 @@ function route() {
 function renderHome() {
   const app = $('app');
   app.style.removeProperty('--c');
+  app.style.removeProperty('--on');
   app.innerHTML = `
     <div class="hero">
       <div class="eyebrow">Learn the Seerah, line by line</div>
@@ -214,7 +220,7 @@ function renderHome() {
     a.style.textDecoration = 'none'; a.style.color = 'inherit';
     const n = s.to - s.from + 1, got = learntCount(i);
     const badge = got === n ? '<span class="stars done">🏆 Learnt!</span>' : got ? `<span class="stars">⭐ ${got}/${n}</span>` : '';
-    a.innerHTML = `<div class="sec ${got === n ? 'complete' : ''}" style="--c:${COLORS[i % COLORS.length]}">
+    a.innerHTML = `<div class="sec ${got === n ? 'complete' : ''}" style="--c:${COLORS[i % COLORS.length]};--on:${onColor(i)}">
       ${badge}
       <div class="num">${i + 1}</div><div><div class="t">${esc(title(i))}</div><div class="n">Lines ${s.from}–${s.to}</div></div></div>`;
     $('sections').append(a);
@@ -238,6 +244,7 @@ function renderSection(i) {
   const s = SECTIONS[i];
   const app = $('app');
   app.style.setProperty('--c', COLORS[i % COLORS.length]);
+  app.style.setProperty('--on', onColor(i));
   app.innerHTML = `
     <div class="eyebrow" style="color:var(--c)">Section ${i + 1} · Lines ${s.from}–${s.to}</div>
     <h2 class="sectitle">${editing ? `<input id="titleIn" value="${esc(title(i))}">` : esc(title(i))}</h2>
