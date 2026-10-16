@@ -121,6 +121,32 @@
   .editbar .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
   .editbar button { background: #fff; border-radius: 10px; padding: 8px 12px; font-weight: 600; border: 1px solid #f0d78a; }
   #err { color: #b91c1c; font-size: .9rem; }
+
+  /* 3D raised look: soft top highlight, darker bottom edge, presses down when tapped */
+  .big, .ctrl, .home, .sec, .lineCard, .progress, .editbar button {
+    transition: transform .08s, box-shadow .08s, border-color .15s, background .15s; }
+  .big:not(.alt):not(.on), .big.on {
+    background-image: linear-gradient(rgba(255,255,255,.22), rgba(0,0,0,.08));
+    box-shadow: 0 4px 0 rgba(0,0,0,.22), 0 8px 16px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.4); }
+  .big.alt, .ctrl, .home, .editbar button {
+    background-image: linear-gradient(#fff, #f7f6f2);
+    box-shadow: 0 3px 0 #d9d7ce, 0 6px 12px rgba(0,0,0,.05), inset 0 1px 0 #fff; }
+  .ctrl.on { background-image: linear-gradient(#f3fff7, #dcfce7); box-shadow: 0 3px 0 #86efac, 0 6px 12px rgba(0,0,0,.05); }
+  .sec, .lineCard, .progress { box-shadow: 0 3px 0 #dedcd3, 0 8px 16px rgba(0,0,0,.05); }
+  .lineCard.chorus { box-shadow: 0 3px 0 #dccbff, 0 8px 16px rgba(0,0,0,.05); }
+  .lineCard.learnt { box-shadow: 0 3px 0 #f6d77a, 0 8px 16px rgba(0,0,0,.05); }
+  .lineCard.playing { box-shadow: 0 3px 0 var(--play), 0 0 0 1px var(--play); }
+  .big:active, .ctrl:active, .home:active, .sec:active, .editbar button:active, .lineCard:has(.lineMain:active) {
+    transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+  .sec .num, .lineCard .bubble, .logo {
+    background-image: linear-gradient(rgba(255,255,255,.28), rgba(0,0,0,.10));
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,.18), inset 0 2px 0 rgba(255,255,255,.35), 0 2px 5px rgba(0,0,0,.18);
+    text-shadow: 0 1px 1px rgba(0,0,0,.18); }
+  .lineCard.chorus .bubble { background-image: linear-gradient(#fff, #f1ecff);
+    box-shadow: inset 0 -3px 0 rgba(139,92,246,.18), 0 2px 5px rgba(0,0,0,.12); }
+  .bubble svg, .logo svg { filter: drop-shadow(0 1.5px 1px rgba(0,0,0,.3)); }
+  .icon, .ctrl .e, .lineCard.learnt .starBtn { filter: drop-shadow(0 2px 1.5px rgba(0,0,0,.22)); }
+  .progress .pbar div, .bar div { background-image: linear-gradient(rgba(255,255,255,.35), rgba(0,0,0,.08)); }
 </style>
 </head>
 <body>
