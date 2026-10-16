@@ -340,7 +340,7 @@ function lineCard(key, isChorus, shownNum) {
   card.innerHTML = `<button class="lineMain">
       <span class="bubble">${c ? c.icon : shownNum}</span>
       <span class="words ${words ? '' : 'empty'}" dir="auto">${words ? esc(words) : esc(nameFor(key))}</span>
-      <span class="icon">${choosing ? '➕' : '▶️'}</span>
+      ${choosing ? '<span class="icon">➕</span>' : ''}
     </button>
     <button class="starBtn" title="${learnt.has(key) ? 'Learnt! Tap to unmark' : 'Tap when you know this line'}">${learnt.has(key) ? '⭐' : '☆'}</button>
     ${picks.length ? `<span class="pick">${picks.join(', ')}</span>` : ''}`;
