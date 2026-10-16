@@ -233,7 +233,7 @@ function renderHome() {
       <div class="eyebrow">Learn the Seerah, line by line</div>
       <h1>Seerah Song<span>by Zain Bikha</span></h1>
       <p>Listen to each line, repeat it as many times as you like, and put the sections together until you know the whole poem by heart.</p>
-      <div class="heroBtns"><a class="big" href="#section-1">▶️ Start with Section 1</a></div>
+      <div class="heroBtns"><button class="big" id="playSong">Play the whole song</button><a class="big alt" href="#section-1">▶️ Start with Section 1</a></div>
     </div>
     ${editBar()}
     <div class="label">Repeat with me!</div>
@@ -255,6 +255,8 @@ function renderHome() {
   });
   wireEditBar();
   $('grown').onclick = () => { editing = !editing; route(); };
+  // Whole song: every section in order, with the extra Salawat and La-ilaha-ill-Allah in their places
+  $('playSong').onclick = () => playList(SECTIONS.flatMap((_, i) => sectionKeys(i)), 'Whole song');
   paintPlaying();
 }
 
@@ -280,7 +282,7 @@ function renderSection(i) {
     ${editing ? '' : progressBox(i)}
     ${editBar()}
     <div class="actions ${editing ? 'hidden' : ''}">
-      <button class="big" id="playAll">▶️ Play whole section</button>
+      <button class="big" id="playAll">Play whole section</button>
       <button class="big alt ${choosing ? 'on' : ''}" id="choose">${choosing ? (chosen.length ? `▶️ Play my ${chosen.length}` : '➕ Tap lines to pick') : '➕ Pick my lines'}</button>
     </div>
     ${choosing ? '<div class="hint">Tap the lines you want, in the order you want. You can add La-ilaha-ill-Allah and Salawat too! Then press <b>Play my lines</b>. <button id="cancelPick" style="text-decoration:underline">Cancel</button></div>' : ''}
