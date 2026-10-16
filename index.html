@@ -150,7 +150,6 @@
 <header class="site"><div class="inner">
   <a class="logo" href="#" id="logo" aria-label="Home"></a>
   <a class="brand" href="#">Seerah Song</a>
-  <a class="home hidden" href="#" id="homeBtn">🕌 Home</a>
 </div></header>
 <main id="app"></main>
 
@@ -214,7 +213,6 @@ function route() {
   const i = m ? +m[1] - 1 : -1;
   choosing = false; chosen = [];
   const song = location.hash === '#song';
-  $('homeBtn').classList.toggle('hidden', !SECTIONS[i] && !song);
   if (song) renderSong(); else if (SECTIONS[i]) renderSection(i); else renderHome();
   window.scrollTo(0, 0);
 }
@@ -264,8 +262,7 @@ function renderSong() {
     <div class="eyebrow">Seerah Song by Zain Bikha</div>
     <h2 class="sectitle">The Whole Song</h2>
     <div class="actions"><button class="big" id="playFromStart">Play from the start</button></div>
-    <div id="songLines"></div>
-    <div class="nextNav"><a class="big" href="#" style="--c:var(--ink);--on:#fff">🕌 Back to home</a></div>`;
+    <div id="songLines"></div>`;
   let p = 0;
   SECTIONS.forEach((s, i) => {
     const wrap = document.createElement('div');
@@ -329,7 +326,7 @@ function renderSection(i) {
 // Big button at the bottom of a section that goes on to the next one (or home after the last)
 function nextNav(i) {
   const j = i + 1;
-  if (!SECTIONS[j]) return `<div class="nextNav"><a class="big" href="#" style="--c:var(--ink);--on:#fff">🕌 Finished! Back to home</a></div>`;
+  if (!SECTIONS[j]) return '';
   return `<div class="nextNav"><a class="big" href="#section-${j + 1}" style="--c:${COLORS[j % COLORS.length]};--on:${onColor(j)};--shade:${shadeFor(j)}">Next: ${esc(title(j))} →</a></div>`;
 }
 
