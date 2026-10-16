@@ -48,7 +48,15 @@
     font-size: 1.4rem; display: grid; place-items: center; flex: none; }
   .sec .t { font-weight: 700; font-size: 1.15rem; line-height: 1.2; }
   .sec .n { color: var(--muted); font-size: .9rem; }
-  .sec .stars { position: absolute; top: 8px; right: 10px; font-size: .8rem; }
+  .sec .stars { position: absolute; top: 8px; right: 10px; font-size: .8rem; font-weight: 700; color: var(--muted); }
+  .sec .stars.done { color: #a16207; }
+  .sec.complete { background: #fffbea; border-color: #f6e3a6; }
+
+  .progress { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-bottom: 16px; }
+  .progress .ptext span { color: var(--muted); font-size: .9rem; }
+  .progress .pbar { height: 8px; background: var(--line); border-radius: 999px; overflow: hidden; margin-top: 8px; }
+  .progress .pbar div { height: 100%; background: var(--gold); border-radius: 999px; transition: width .3s; }
+  .progress.done { background: #fffbea; border-color: #f6e3a6; font-weight: 700; font-size: 1.1rem; text-align: center; }
 
   /* Buttons */
   .big { border-radius: 10px; padding: 13px 20px; font-weight: 700; font-size: 1.05rem; background: var(--c, var(--ink)); color: #fff;
@@ -69,6 +77,14 @@
     background: var(--card); border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line);
     transition: border-color .15s, background .15s; position: relative; }
   .lineCard:hover { border-color: var(--c2); }
+  .lineCard:has(.lineMain) { padding: 0 6px 0 0; gap: 0; }
+  .lineMain { flex: 1; min-width: 0; display: flex; align-items: center; gap: 14px; padding: 12px 8px 12px 14px; text-align: start; }
+  .starBtn { flex: none; width: 48px; height: 48px; border-radius: 12px; font-size: 1.7rem; line-height: 1; color: #c9c6bd; }
+  .starBtn:hover { background: #fffbea; color: var(--gold); }
+  .lineCard.learnt { border-color: #f6d77a; }
+  .lineCard.learnt .starBtn { color: inherit; }
+  .lineCard.learnt.pop .starBtn { animation: pop .35s ease-out; }
+  @keyframes pop { 0% { transform: scale(.4); } 70% { transform: scale(1.25); } 100% { transform: scale(1); } }
   .lineCard .bubble { flex: none; width: 42px; height: 42px; border-radius: 10px; background: var(--c2); color: #fff;
     display: grid; place-items: center; font-weight: 700; font-size: 1.1rem; }
   .lineCard .words { flex: 1; font-size: 1.15rem; font-weight: 500; white-space: pre-line; font-style: italic; }
@@ -152,9 +168,14 @@ const saveEdits = () => { try { localStorage.setItem('seerahEdits', JSON.stringi
 const lyric = key => (edits.lyrics[key] ?? BASE[key] ?? '').trim();
 const title = i => edits.titles[i] ?? SECTIONS[i].title;
 
-let stars = {};
-try { stars = JSON.parse(localStorage.getItem('seerahStars') || '{}'); } catch {}
-const saveStars = () => { try { localStorage.setItem('seerahStars', JSON.stringify(stars)); } catch {} };
+// Lines the child has marked as learnt (kept in this browser)
+let justToggled = null;
+let learnt = new Set();
+try { learnt = new Set(JSON.parse(localStorage.getItem('seerahLearnt') || '[]')); } catch {}
+const saveLearnt = () => { try { localStorage.setItem('seerahLearnt', JSON.stringify([...learnt])); } catch {} };
+const lineNumbers = i => { const s = SECTIONS[i], out = []; for (let n = s.from; n <= s.to; n++) out.push(String(n)); return out; };
+const learntCount = i => lineNumbers(i).filter(k => learnt.has(k)).length;
+const currentSection = () => { const m = location.hash.match(/^#section-(\d+)$/); return m && SECTIONS[+m[1] - 1] ? +m[1] - 1 : -1; };
 
 let editing = false;
 let choosing = false;
@@ -191,10 +212,10 @@ function renderHome() {
     const a = document.createElement('a');
     a.href = `#section-${i + 1}`;
     a.style.textDecoration = 'none'; a.style.color = 'inherit';
-    const n = s.to - s.from + 1;
-    const st = stars[i] ? '⭐'.repeat(Math.min(3, stars[i])) : '';
-    a.innerHTML = `<div class="sec" style="--c:${COLORS[i % COLORS.length]}">
-      <span class="stars">${st}</span>
+    const n = s.to - s.from + 1, got = learntCount(i);
+    const badge = got === n ? '<span class="stars done">🏆 Learnt!</span>' : got ? `<span class="stars">⭐ ${got}/${n}</span>` : '';
+    a.innerHTML = `<div class="sec ${got === n ? 'complete' : ''}" style="--c:${COLORS[i % COLORS.length]}">
+      ${badge}
       <div class="num">${i + 1}</div><div><div class="t">${esc(title(i))}</div><div class="n">Lines ${s.from}–${s.to}</div></div></div>`;
     $('sections').append(a);
   });
@@ -220,10 +241,11 @@ function renderSection(i) {
   app.innerHTML = `
     <div class="eyebrow" style="color:var(--c)">Section ${i + 1} · Lines ${s.from}–${s.to}</div>
     <h2 class="sectitle">${editing ? `<input id="titleIn" value="${esc(title(i))}">` : esc(title(i))}</h2>
+    ${editing ? '' : progressBox(i)}
     ${editBar()}
     <div class="actions ${editing ? 'hidden' : ''}">
       <button class="big" id="playAll">▶️ Play whole section</button>
-      <button class="big alt ${choosing ? 'on' : ''}" id="choose">${choosing ? (chosen.length ? `▶️ Play my ${chosen.length}` : '⭐ Tap lines to pick') : '⭐ Pick my lines'}</button>
+      <button class="big alt ${choosing ? 'on' : ''}" id="choose">${choosing ? (chosen.length ? `▶️ Play my ${chosen.length}` : '➕ Tap lines to pick') : '➕ Pick my lines'}</button>
     </div>
     ${choosing ? '<div class="hint">Tap the lines you want, in the order you want. You can add La-ilaha-ill-Allah and Salawat too! Then press <b>Play my lines</b>. <button id="cancelPick" style="text-decoration:underline">Cancel</button></div>' : ''}
     <div class="lines" id="lines"></div>
@@ -252,6 +274,14 @@ function renderSection(i) {
   paintPlaying();
 }
 
+function progressBox(i) {
+  const n = lineNumbers(i).length, got = learntCount(i);
+  if (got === n) return `<div class="progress done">🏆 MashaAllah! You've learnt the whole section!</div>`;
+  return `<div class="progress">
+    <div class="ptext">⭐ <b>${got} of ${n}</b> lines learnt <span>· tap ☆ when you know a line</span></div>
+    <div class="pbar"><div style="width:${100 * got / n}%"></div></div></div>`;
+}
+
 function lineCard(key, isChorus, shownNum) {
   const c = CHORUSES.find(x => x.key === key);
   if (editing) {
@@ -269,25 +299,34 @@ function lineCard(key, isChorus, shownNum) {
     div.append(ta, listen);
     return div;
   }
-  const b = document.createElement('button');
-  b.className = 'lineCard' + (isChorus ? ' chorus' : '');
-  b.dataset.key = key;
+  const card = document.createElement('div');
+  card.className = 'lineCard' + (isChorus ? ' chorus' : '') + (learnt.has(key) ? ' learnt' : '') + (key === justToggled ? ' pop' : '');
+  card.dataset.key = key;
   const words = lyric(key);
   const picks = chosen.map((k, j) => k === key ? j + 1 : 0).filter(Boolean);
-  b.innerHTML = `<span class="bubble">${c ? c.icon : shownNum}</span>
-    <span class="words ${words ? '' : 'empty'}" dir="auto">${words ? esc(words) : esc(nameFor(key))}</span>
-    <span class="icon">${choosing ? '⭐' : '▶️'}</span>
+  card.innerHTML = `<button class="lineMain">
+      <span class="bubble">${c ? c.icon : shownNum}</span>
+      <span class="words ${words ? '' : 'empty'}" dir="auto">${words ? esc(words) : esc(nameFor(key))}</span>
+      <span class="icon">${choosing ? '➕' : '▶️'}</span>
+    </button>
+    <button class="starBtn" title="${learnt.has(key) ? 'Learnt! Tap to unmark' : 'Tap when you know this line'}">${learnt.has(key) ? '⭐' : '☆'}</button>
     ${picks.length ? `<span class="pick">${picks.join(', ')}</span>` : ''}`;
-  b.onclick = () => {
+  card.querySelector('.lineMain').onclick = () => {
     if (choosing) {
       chosen.push(key);
-      const m = location.hash.match(/^#section-(\d+)$/);
-      renderSection(+m[1] - 1);
+      renderSection(currentSection());
     } else {
-      playList([key], words ? nameFor(key) : nameFor(key));
+      playList([key], nameFor(key));
     }
   };
-  return b;
+  card.querySelector('.starBtn').onclick = () => {
+    if (learnt.has(key)) learnt.delete(key); else learnt.add(key);
+    justToggled = key; setTimeout(() => { justToggled = null; }, 50);
+    saveLearnt();
+    const i = currentSection();
+    if (i >= 0) renderSection(i); else renderHome();
+  };
+  return card;
 }
 
 function editBar() {
@@ -355,7 +394,6 @@ function stop() {
 audio.addEventListener('ended', () => {
   if (pos < list.length - 1) { pos++; start(); return; }
   loops++;
-  if (list.length > 1 && listSection >= 0) { stars[listSection] = (stars[listSection] || 0) + 1; saveStars(); }
   if (repeat) { gapTimer = setTimeout(() => { gapTimer = null; pos = 0; start(); }, 1000); }
   paintPlaying();
 });
@@ -376,7 +414,7 @@ function paintPlaying() {
     else if (audio.paused) what = '⏸️ ' + what;
   }
   $('what').textContent = what;
-  $('stars').textContent = key && loops ? '⭐'.repeat(Math.min(loops, 5)) + (loops > 5 ? ` ×${loops}` : '') : '';
+  $('stars').textContent = key && loops ? `🔁 ×${loops}` : '';
   $('pause').innerHTML = key && audio.paused && !gapTimer
     ? '<span class="e">▶️</span><span>Play</span>' : '<span class="e">⏸️</span><span>Pause</span>';
 }
