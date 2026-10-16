@@ -171,7 +171,8 @@
   </div>
 </div>
 
-<script src="lyrics.js"></script>
+<!-- Always fetch the newest lyrics, so updates show straight away -->
+<script>document.write('<script src="lyrics.js?t=' + Date.now() + '"><\/script>');</script>
 <script>
 const $ = id => document.getElementById(id);
 const COLORS = ['#ef4444', '#f97316', '#ffe000', '#22c55e', '#14b8a6', '#0ea5e9', '#6366f1', '#a855f7', '#ec4899', '#84cc16'];
