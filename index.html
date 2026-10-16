@@ -3,101 +3,113 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My Seerah Poem</title>
+<title>Seerah Song by Zain Bikha</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap">
 <style>
   :root {
-    --bg: #fff8ec; --card: #ffffff; --text: #2b2440; --muted: #7a7290;
-    --line: #f0e4cf; --play: #22c55e; --chorus: #8b5cf6; --chorus-soft: #efe7ff;
-    --gold: #f59e0b;
+    --bg: #f1f1ec; --card: #ffffff; --text: #1c1b22; --muted: #6b6a73;
+    --line: #e4e3dc; --play: #22c55e; --play-soft: #effdf3; --chorus: #8b5cf6; --chorus-soft: #f5f0ff;
+    --gold: #f59e0b; --eyebrow: #a16207; --ink: #2b2440;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
-    font: 18px/1.4 "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
-    background-image: radial-gradient(#f6dfb3 1.2px, transparent 1.2px); background-size: 26px 26px; }
-  main { max-width: 760px; margin: 0 auto; padding: 20px 16px 170px; }
+    font: 18px/1.5 "Roboto Condensed", "Arial Narrow", system-ui, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 28px 16px 180px; }
+  a { color: inherit; text-decoration: none; }
   button, input, textarea { font: inherit; color: inherit; }
   button { cursor: pointer; border: none; background: none; -webkit-tap-highlight-color: transparent; }
   .hidden { display: none !important; }
 
-  /* Home */
-  .hero { text-align: center; margin: 8px 0 22px; }
-  .hero .moon { font-size: 3.2rem; display: inline-block; animation: bob 3s ease-in-out infinite; }
-  .hero h1 { font-size: 2.2rem; margin: 4px 0 2px; font-weight: 700; }
-  .hero p { margin: 0; color: var(--muted); }
-  @keyframes bob { 50% { transform: translateY(-6px) rotate(-6deg); } }
+  /* Site header */
+  .site { position: sticky; top: 0; z-index: 5; background: var(--card); border-bottom: 1px solid var(--line); }
+  .site .inner { max-width: 760px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+  .logo { width: 42px; height: 42px; border-radius: 10px; background: var(--ink); display: grid; place-items: center; flex: none; }
+  .logo svg { width: 28px; height: 28px; }
+  .brand { font-size: 1.45rem; font-weight: 700; letter-spacing: -.01em; flex: 1; }
+  .home { border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; font-weight: 600; background: var(--card); }
 
-  .label { font-weight: 600; color: var(--muted); margin: 18px 4px 10px; font-size: 1rem; }
-  .choruses { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .sections { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
-  .sec { --c: #ef4444; position: relative; background: var(--card); border-radius: 22px; padding: 16px 12px 14px;
-    text-align: center; border: 3px solid var(--c); box-shadow: 0 6px 0 var(--c); transition: transform .1s; }
-  .sec:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--c); }
-  .sec .num { width: 58px; height: 58px; border-radius: 50%; background: var(--c); color: #fff; font-weight: 700;
-    font-size: 1.7rem; display: grid; place-items: center; margin: 0 auto 8px; }
-  .sec .t { font-weight: 600; font-size: 1.1rem; }
+  /* Home */
+  .eyebrow { color: var(--eyebrow); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; font-size: .85rem; margin: 6px 0 10px; }
+  .hero h1 { font-size: clamp(2.3rem, 9vw, 3.4rem); line-height: 1.05; margin: 0 0 14px; font-weight: 700; letter-spacing: -.02em; }
+  .hero h1 span { display: block; color: var(--muted); font-weight: 500; font-size: .6em; margin-top: 6px; letter-spacing: 0; }
+  .hero p { margin: 0 0 22px; color: var(--muted); font-size: 1.15rem; }
+  .heroBtns { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
+
+  .label { font-weight: 700; color: var(--eyebrow); letter-spacing: .12em; text-transform: uppercase; margin: 30px 2px 12px; font-size: .85rem; }
+  .choruses { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 480px) { .choruses { grid-template-columns: 1fr; } }
+  .sections { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .sec { --c: #ef4444; position: relative; display: flex; align-items: center; gap: 14px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 14px; padding: 14px; transition: border-color .15s, transform .1s; }
+  .sec:hover { border-color: var(--c); }
+  .sec:active { transform: scale(.98); }
+  .sec .num { width: 48px; height: 48px; border-radius: 12px; background: var(--c); color: #fff; font-weight: 700;
+    font-size: 1.4rem; display: grid; place-items: center; flex: none; }
+  .sec .t { font-weight: 700; font-size: 1.15rem; line-height: 1.2; }
   .sec .n { color: var(--muted); font-size: .9rem; }
-  .sec .stars { position: absolute; top: 8px; right: 10px; font-size: .85rem; }
+  .sec .stars { position: absolute; top: 8px; right: 10px; font-size: .8rem; }
+
+  /* Buttons */
+  .big { border-radius: 10px; padding: 13px 20px; font-weight: 700; font-size: 1.05rem; background: var(--c, var(--ink)); color: #fff;
+    border: 1px solid var(--c, var(--ink)); transition: filter .15s; }
+  .big:hover { filter: brightness(1.08); }
+  .big.alt { background: var(--card); color: var(--text); border-color: var(--line); }
+  .big.on { background: var(--gold); color: #fff; border-color: var(--gold); }
 
   /* Section page */
-  .top { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-  .home { background: var(--card); border-radius: 16px; padding: 10px 16px; font-weight: 600; border: 3px solid var(--line); }
-  .sectitle { flex: 1; font-size: 1.6rem; font-weight: 700; margin: 0; color: var(--c); }
-  .sectitle input { width: 100%; font-weight: 700; color: inherit; border: 2px dashed var(--c); border-radius: 12px; padding: 4px 8px; background: #fff; }
-  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
-  .big { flex: 1; min-width: 140px; border-radius: 18px; padding: 14px 16px; font-weight: 700; font-size: 1.1rem;
-    background: var(--c); color: #fff; box-shadow: 0 5px 0 rgba(0,0,0,.18); }
-  .big.alt { background: var(--card); color: var(--c); border: 3px solid var(--c); }
-  .big.on { background: var(--gold); color: #fff; border-color: var(--gold); }
-  .big:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.18); }
-  .hint { background: #fff3c4; border-radius: 14px; padding: 10px 14px; margin: -4px 0 14px; font-size: .95rem; }
+  .sectitle { font-size: clamp(2rem, 8vw, 2.8rem); line-height: 1.1; font-weight: 700; margin: 0 0 18px; letter-spacing: -.02em; }
+  .sectitle input { width: 100%; font-weight: 700; border: 1px dashed var(--c); border-radius: 10px; padding: 4px 10px; background: #fff; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+  .actions .big { flex: 1; min-width: 150px; }
+  .hint { background: #fef6dc; border: 1px solid #f6e3a6; border-radius: 12px; padding: 10px 14px; margin: -4px 0 14px; font-size: .95rem; }
 
-  .lines { display: grid; gap: 10px; }
-  .lineCard { --c2: var(--c); display: flex; align-items: center; gap: 12px; width: 100%; text-align: start;
-    background: var(--card); border-radius: 18px; padding: 12px 14px; border: 3px solid var(--line);
-    box-shadow: 0 4px 0 var(--line); transition: transform .1s; position: relative; }
-  .lineCard:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }
-  .lineCard .bubble { flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--c2); color: #fff;
-    display: grid; place-items: center; font-weight: 700; font-size: 1.15rem; }
-  .lineCard .words { flex: 1; font-size: 1.15rem; font-weight: 500; white-space: pre-line; }
-  .lineCard .words { font-style: italic; }
-  .lineCard .words:not(.empty) { font-size: 1.2rem; }
-  .lineCard textarea { font-style: italic; }
+  .lines { display: grid; gap: 8px; }
+  .lineCard { --c2: var(--c); display: flex; align-items: center; gap: 14px; width: 100%; text-align: start;
+    background: var(--card); border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line);
+    transition: border-color .15s, background .15s; position: relative; }
+  .lineCard:hover { border-color: var(--c2); }
+  .lineCard .bubble { flex: none; width: 42px; height: 42px; border-radius: 10px; background: var(--c2); color: #fff;
+    display: grid; place-items: center; font-weight: 700; font-size: 1.1rem; }
+  .lineCard .words { flex: 1; font-size: 1.15rem; font-weight: 500; white-space: pre-line; font-style: italic; }
+  .lineCard .words:not(.empty) { font-size: 1.25rem; }
   .lineCard .words.empty { color: var(--muted); }
   .bubble svg { width: 30px; height: 30px; display: block; }
-  .lineCard .icon { flex: none; font-size: 1.4rem; }
-  .lineCard.chorus .bubble { background: #fff; border: 2px solid #dccbff; }
-  .home { color: inherit; text-decoration: none; }
-  .lineCard.chorus { --c2: var(--chorus); background: var(--chorus-soft); border-color: #dccbff; box-shadow: 0 4px 0 #dccbff; }
-  .lineCard.playing { border-color: var(--play); box-shadow: 0 4px 0 var(--play); animation: pulse 1.2s ease-in-out infinite; }
-  @keyframes pulse { 50% { transform: scale(1.015); } }
+  .lineCard .icon { flex: none; font-size: 1.2rem; opacity: .8; }
+  .lineCard.chorus { --c2: var(--chorus); background: var(--chorus-soft); border-color: #e4d8fd; }
+  .lineCard.chorus .bubble { background: #fff; border: 1px solid #e4d8fd; }
+  .lineCard.playing { border-color: var(--play); background: var(--play-soft); box-shadow: 0 0 0 1px var(--play); }
   .lineCard .pick { position: absolute; top: -8px; right: -6px; background: var(--gold); color: #fff; font-weight: 700;
-    border-radius: 999px; min-width: 30px; height: 30px; display: grid; place-items: center; padding: 0 8px; font-size: .95rem; }
-  .lineCard textarea { flex: 1; min-height: 52px; resize: vertical; border: 2px dashed var(--c2); border-radius: 12px; padding: 6px 10px; background: #fff; }
+    border-radius: 999px; min-width: 28px; height: 28px; display: grid; place-items: center; padding: 0 8px; font-size: .9rem; }
+  .lineCard textarea { flex: 1; min-height: 52px; resize: vertical; border: 1px dashed var(--c2); border-radius: 10px; padding: 6px 10px; background: #fff; font-style: italic; }
 
   /* Player bar */
-  .player { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 3px solid var(--line);
-    box-shadow: 0 -6px 20px rgba(0,0,0,.08); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+  .player { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--line);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
   .player .inner { max-width: 760px; margin: 0 auto; }
   .now { display: flex; justify-content: space-between; gap: 10px; font-weight: 600; margin-bottom: 6px; }
   .now .what { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .bar { height: 10px; background: var(--line); border-radius: 999px; overflow: hidden; margin-bottom: 10px; }
+  .bar { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; margin-bottom: 10px; }
   .bar div { height: 100%; width: 0; background: var(--play); border-radius: 999px; transition: width .2s linear; }
   .ctrls { display: flex; gap: 8px; }
-  .ctrl { flex: 1; border-radius: 14px; padding: 10px 4px; background: #f6f1e7; font-weight: 600; font-size: .95rem; }
-  .ctrl .e { display: block; font-size: 1.4rem; line-height: 1.1; }
-  .ctrl.on { background: #dcfce7; color: #166534; }
+  .ctrl { flex: 1; border-radius: 10px; padding: 8px 4px; border: 1px solid var(--line); font-weight: 600; font-size: .95rem; }
+  .ctrl .e { display: block; font-size: 1.3rem; line-height: 1.15; }
+  .ctrl.on { background: var(--play-soft); border-color: var(--play); color: #166534; }
 
-  .grown { text-align: center; margin-top: 30px; }
+  .grown { text-align: center; margin-top: 34px; }
   .grown button { color: var(--muted); font-size: .9rem; text-decoration: underline; }
-  .editbar { background: #fff3c4; border-radius: 16px; padding: 12px 14px; margin-bottom: 16px; font-size: .95rem; }
+  .editbar { background: #fef6dc; border: 1px solid #f6e3a6; border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; font-size: .95rem; }
   .editbar .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-  .editbar button { background: #fff; border-radius: 12px; padding: 8px 12px; font-weight: 600; border: 2px solid #f0d78a; }
+  .editbar button { background: #fff; border-radius: 10px; padding: 8px 12px; font-weight: 600; border: 1px solid #f0d78a; }
   #err { color: #b91c1c; font-size: .9rem; }
 </style>
 </head>
 <body>
+<header class="site"><div class="inner">
+  <a class="logo" href="#" id="logo" aria-label="Home"></a>
+  <a class="brand" href="#">Seerah Song</a>
+  <a class="home hidden" href="#" id="homeBtn">🕌 Home</a>
+</div></header>
 <main id="app"></main>
 
 <div class="player">
@@ -128,6 +140,7 @@ const CHORUSES = [
 ];
 // Extra chorus buttons placed inside a section, after a given line
 const INSERTS = window.INSERTS || {};
+document.getElementById('logo').innerHTML = MADINAH;
 
 const fileFor = key => CHORUSES.find(c => c.key === key)?.file || `clips/Trim_Seerah_${key}.mp3`;
 const nameFor = key => CHORUSES.find(c => c.key === key)?.name || `Line ${key}`;
@@ -152,6 +165,7 @@ function route() {
   const m = location.hash.match(/^#section-(\d+)$/);
   const i = m ? +m[1] - 1 : -1;
   choosing = false; chosen = [];
+  $('homeBtn').classList.toggle('hidden', !SECTIONS[i]);
   if (SECTIONS[i]) renderSection(i); else renderHome();
   window.scrollTo(0, 0);
 }
@@ -160,11 +174,16 @@ function renderHome() {
   const app = $('app');
   app.style.removeProperty('--c');
   app.innerHTML = `
-    <div class="hero"><span class="moon">🌙</span><h1>My Seerah Poem</h1><p>Pick a section and start learning!</p></div>
+    <div class="hero">
+      <div class="eyebrow">Learn the Seerah, line by line</div>
+      <h1>Seerah Song<span>by Zain Bikha</span></h1>
+      <p>Listen to each line, repeat it as many times as you like, and put the sections together until you know the whole poem by heart.</p>
+      <div class="heroBtns"><a class="big" href="#section-1">▶️ Start with Section 1</a></div>
+    </div>
     ${editBar()}
-    <div class="label">🔁 Repeat with me!</div>
+    <div class="label">Repeat with me!</div>
     <div class="choruses" id="choruses"></div>
-    <div class="label">📖 Sections</div>
+    <div class="label">Sections</div>
     <div class="sections" id="sections"></div>
     <div class="grown"><button id="grown">${editing ? 'Done editing' : '✏️ Grown-ups: add lyrics'}</button></div>`;
   CHORUSES.forEach(c => $('choruses').append(lineCard(c.key, true)));
@@ -176,7 +195,7 @@ function renderHome() {
     const st = stars[i] ? '⭐'.repeat(Math.min(3, stars[i])) : '';
     a.innerHTML = `<div class="sec" style="--c:${COLORS[i % COLORS.length]}">
       <span class="stars">${st}</span>
-      <div class="num">${i + 1}</div><div class="t">${esc(title(i))}</div><div class="n">${n} lines</div></div>`;
+      <div class="num">${i + 1}</div><div><div class="t">${esc(title(i))}</div><div class="n">Lines ${s.from}–${s.to}</div></div></div>`;
     $('sections').append(a);
   });
   wireEditBar();
@@ -199,10 +218,8 @@ function renderSection(i) {
   const app = $('app');
   app.style.setProperty('--c', COLORS[i % COLORS.length]);
   app.innerHTML = `
-    <div class="top">
-      <a class="home" href="#">🕌 Home</a>
-      <h2 class="sectitle">${editing ? `<input id="titleIn" value="${esc(title(i))}">` : esc(title(i))}</h2>
-    </div>
+    <div class="eyebrow" style="color:var(--c)">Section ${i + 1} · Lines ${s.from}–${s.to}</div>
+    <h2 class="sectitle">${editing ? `<input id="titleIn" value="${esc(title(i))}">` : esc(title(i))}</h2>
     ${editBar()}
     <div class="actions ${editing ? 'hidden' : ''}">
       <button class="big" id="playAll">▶️ Play whole section</button>
@@ -210,7 +227,7 @@ function renderSection(i) {
     </div>
     ${choosing ? '<div class="hint">Tap the lines you want, in the order you want. You can add La-ilaha-ill-Allah and Salawat too! Then press <b>Play my lines</b>. <button id="cancelPick" style="text-decoration:underline">Cancel</button></div>' : ''}
     <div class="lines" id="lines"></div>
-    <div class="label">🔁 Repeat with me!</div>
+    <div class="label">Repeat with me!</div>
     <div class="lines" id="chorusLines"></div>
     <div class="grown"><button id="grown">${editing ? 'Done editing' : '✏️ Grown-ups: add lyrics'}</button></div>`;
   sectionKeys(i).forEach(k => {
