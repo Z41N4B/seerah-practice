@@ -3,7 +3,7 @@
 
 window.SECTIONS = [
   { title: "Introduction", from: 1, to: 5 },
-  { title: "Early Makkah", from: 6, to: 13 },
+  { title: "History of Makkah", from: 6, to: 13 },
   { title: "Childhood and Youth of the Prophet", from: 14, to: 22 },
   { title: "Revelation Begins", from: 23, to: 33 },
   { title: "Hardships in Makkah", from: 34, to: 44 },
