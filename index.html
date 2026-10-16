@@ -126,7 +126,7 @@
   .big, .ctrl, .home, .sec, .lineCard, .progress, .editbar button {
     transition: transform .08s, box-shadow .08s, border-color .15s, background .15s; }
   .big:not(.alt):not(.on), .big.on {
-    background-image: linear-gradient(rgba(255,255,255,.22), rgba(0,0,0,.08));
+    background-image: linear-gradient(rgba(255,255,255,.22), var(--shade, rgba(0,0,0,.08)));
     box-shadow: 0 4px 0 rgba(0,0,0,.22), 0 8px 16px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.4); }
   .big.alt, .ctrl, .home, .editbar button {
     background-image: linear-gradient(#fff, #f7f6f2);
@@ -139,7 +139,7 @@
   .big:active, .ctrl:active, .home:active, .sec:active, .editbar button:active, .lineCard:has(.lineMain:active) {
     transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.2); }
   .sec .num, .lineCard .bubble, .logo {
-    background-image: linear-gradient(rgba(255,255,255,.28), rgba(0,0,0,.10));
+    background-image: linear-gradient(rgba(255,255,255,.28), var(--shade, rgba(0,0,0,.10)));
     box-shadow: inset 0 -3px 0 rgba(0,0,0,.18), inset 0 2px 0 rgba(255,255,255,.35), 0 2px 5px rgba(0,0,0,.18);
     text-shadow: 0 1px 1px rgba(0,0,0,.18); }
   .lineCard.chorus .bubble { background-image: linear-gradient(#fff, #f1ecff);
@@ -174,9 +174,10 @@
 <script src="lyrics.js"></script>
 <script>
 const $ = id => document.getElementById(id);
-const COLORS = ['#ef4444', '#f97316', '#facc15', '#22c55e', '#14b8a6', '#0ea5e9', '#6366f1', '#a855f7', '#ec4899', '#84cc16'];
+const COLORS = ['#ef4444', '#f97316', '#ffe000', '#22c55e', '#14b8a6', '#0ea5e9', '#6366f1', '#a855f7', '#ec4899', '#84cc16'];
 // Text colour to use on top of each section colour (dark on the bright yellow so it stays readable)
-const onColor = i => COLORS[i % COLORS.length] === '#facc15' ? '#3b2f00' : '#fff';
+const onColor = i => COLORS[i % COLORS.length] === '#ffe000' ? '#3b2f00' : '#fff';
+const shadeFor = i => COLORS[i % COLORS.length] === '#ffe000' ? 'rgba(255,255,255,0)' : 'rgba(0,0,0,.10)';
 const SECTIONS = window.SECTIONS || [];
 const BASE = window.LYRICS || {};
 const KAABA = `<svg viewBox="0 0 32 32" aria-label="Kaaba"><path d="M5 10 16 6l11 4v15l-11 4-11-4z" fill="#1c1917"/><path d="M16 6v23" stroke="#44403c" stroke-width="1"/><path d="M5 13.5 16 17.5l11-4v2.6L16 20.1 5 16.1z" fill="#eab308"/><rect x="19" y="20.5" width="4" height="6" rx=".6" transform="skewY(-20)" transform-origin="21 23" fill="#ca8a04"/></svg>`;
@@ -226,6 +227,7 @@ function renderHome() {
   const app = $('app');
   app.style.removeProperty('--c');
   app.style.removeProperty('--on');
+  app.style.removeProperty('--shade');
   app.innerHTML = `
     <div class="hero">
       <div class="eyebrow">Learn the Seerah, line by line</div>
@@ -246,7 +248,7 @@ function renderHome() {
     a.style.textDecoration = 'none'; a.style.color = 'inherit';
     const n = s.to - s.from + 1, got = learntCount(i);
     const badge = got === n ? '<span class="stars done">🏆 Learnt!</span>' : got ? `<span class="stars">⭐ ${got}/${n}</span>` : '';
-    a.innerHTML = `<div class="sec ${got === n ? 'complete' : ''}" style="--c:${COLORS[i % COLORS.length]};--on:${onColor(i)}">
+    a.innerHTML = `<div class="sec ${got === n ? 'complete' : ''}" style="--c:${COLORS[i % COLORS.length]};--on:${onColor(i)};--shade:${shadeFor(i)}">
       ${badge}
       <div class="num">${i + 1}</div><div><div class="t">${esc(title(i))}</div><div class="n">Lines ${s.from}–${s.to}</div></div></div>`;
     $('sections').append(a);
@@ -271,6 +273,7 @@ function renderSection(i) {
   const app = $('app');
   app.style.setProperty('--c', COLORS[i % COLORS.length]);
   app.style.setProperty('--on', onColor(i));
+  app.style.setProperty('--shade', shadeFor(i));
   app.innerHTML = `
     <div class="eyebrow" style="color:var(--c)">Section ${i + 1} · Lines ${s.from}–${s.to}</div>
     <h2 class="sectitle">${editing ? `<input id="titleIn" value="${esc(title(i))}">` : esc(title(i))}</h2>
