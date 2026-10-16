@@ -118,6 +118,8 @@
   .ctrl.on { background: var(--play-soft); border-color: var(--play); color: #166534; }
 
   .grown { text-align: center; margin-top: 34px; }
+  .nextNav { display: flex; margin-top: 26px; }
+  .nextNav .big { flex: 1; text-align: center; font-size: 1.15rem; padding: 16px 20px; }
   .grown button { color: var(--muted); font-size: .9rem; text-decoration: underline; }
   .editbar { background: #fef6dc; border: 1px solid #f6e3a6; border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; font-size: .95rem; }
   .editbar .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
@@ -291,6 +293,7 @@ function renderSection(i) {
     <div class="lines" id="lines"></div>
     <div class="label">Repeat with me!</div>
     <div class="lines" id="chorusLines"></div>
+    ${nextNav(i)}
     <div class="grown"><button id="grown">${editing ? 'Done editing' : '✏️ Grown-ups: add lyrics'}</button></div>`;
   sectionKeys(i).forEach(k => {
     const isChorus = CHORUSES.some(c => c.key === k);
@@ -312,6 +315,14 @@ function renderSection(i) {
     $('cancelPick')?.addEventListener('click', () => { choosing = false; chosen = []; renderSection(i); });
   }
   paintPlaying();
+}
+
+// Big button at the bottom of a section that goes on to the next one (or home after the last)
+function nextNav(i) {
+  if (editing) return '';
+  const j = i + 1;
+  if (!SECTIONS[j]) return `<div class="nextNav"><a class="big" href="#" style="--c:var(--ink);--on:#fff">🏠 Finished! Back to home</a></div>`;
+  return `<div class="nextNav"><a class="big" href="#section-${j + 1}" style="--c:${COLORS[j % COLORS.length]};--on:${onColor(j)};--shade:${shadeFor(j)}">Next: ${esc(title(j))} →</a></div>`;
 }
 
 function progressBox(i) {
