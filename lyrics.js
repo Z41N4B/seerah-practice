@@ -3,15 +3,15 @@
 
 window.SECTIONS = [
   { title: "Introduction", from: 1, to: 5 },
-  { title: "Section 2", from: 6, to: 13 },
-  { title: "Section 3", from: 14, to: 23 },
-  { title: "Section 4", from: 24, to: 33 },
-  { title: "Section 5", from: 34, to: 43 },
-  { title: "Section 6", from: 44, to: 53 },
-  { title: "Section 7", from: 54, to: 63 },
-  { title: "Section 8", from: 64, to: 73 },
-  { title: "Section 9", from: 74, to: 83 },
-  { title: "Section 10", from: 84, to: 88 },
+  { title: "Early Makkah", from: 6, to: 13 },
+  { title: "Childhood and Youth of the Prophet", from: 14, to: 22 },
+  { title: "Revelation Begins", from: 23, to: 33 },
+  { title: "Hardships in Makkah", from: 34, to: 44 },
+  { title: "Life in Madinah", from: 45, to: 55 },
+  { title: "Return to Allah", from: 56, to: 63 },
+  { title: "Leader of Humanity", from: 64, to: 73 },
+  { title: "Dua", from: 74, to: 78 },
+  { title: "Praise for the Prophet", from: 79, to: 88 },
 ];
 
 // Extra La-ilaha-ill-Allah ("chorus") or Salawat ("salawat") buttons, placed after a line number.

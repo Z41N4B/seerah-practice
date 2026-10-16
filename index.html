@@ -102,7 +102,6 @@
   .lineCard.playing { border-color: var(--play); background: var(--play-soft); box-shadow: 0 0 0 1px var(--play); }
   .lineCard .pick { position: absolute; top: -8px; right: -6px; background: var(--gold); color: #fff; font-weight: 700;
     border-radius: 999px; min-width: 28px; height: 28px; display: grid; place-items: center; padding: 0 8px; font-size: .9rem; }
-  .lineCard textarea { flex: 1; min-height: 52px; resize: vertical; border: 1px dashed var(--c2); border-radius: 10px; padding: 6px 10px; background: #fff; font-style: italic; }
 
   /* Player bar */
   .player { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--line);
@@ -117,29 +116,24 @@
   .ctrl .e { display: block; font-size: 1.3rem; line-height: 1.15; }
   .ctrl.on { background: var(--play-soft); border-color: var(--play); color: #166534; }
 
-  .grown { text-align: center; margin-top: 34px; }
   .nextNav { display: flex; margin-top: 26px; }
   .nextNav .big { flex: 1; text-align: center; font-size: 1.15rem; padding: 16px 20px; }
-  .grown button { color: var(--muted); font-size: .9rem; text-decoration: underline; }
-  .editbar { background: #fef6dc; border: 1px solid #f6e3a6; border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; font-size: .95rem; }
-  .editbar .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-  .editbar button { background: #fff; border-radius: 10px; padding: 8px 12px; font-weight: 600; border: 1px solid #f0d78a; }
   #err { color: #b91c1c; font-size: .9rem; }
 
   /* 3D raised look: soft top highlight, darker bottom edge, presses down when tapped */
-  .big, .ctrl, .home, .sec, .lineCard, .progress, .editbar button {
+  .big, .ctrl, .home, .sec, .lineCard, .progress {
     transition: transform .08s, box-shadow .08s, border-color .15s, background .15s; }
   .big:not(.alt):not(.on), .big.on {
     background-image: linear-gradient(rgba(255,255,255,.22), var(--shade, rgba(0,0,0,.08)));
     box-shadow: 0 4px 0 rgba(0,0,0,.22), 0 8px 16px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.4); }
-  .big.alt, .ctrl, .home, .editbar button {
+  .big.alt, .ctrl, .home {
     background-image: linear-gradient(#fff, #f7f6f2);
     box-shadow: 0 3px 0 #d9d7ce, 0 6px 12px rgba(0,0,0,.05), inset 0 1px 0 #fff; }
   .ctrl.on { background-image: linear-gradient(#f3fff7, #dcfce7); box-shadow: 0 3px 0 #86efac, 0 6px 12px rgba(0,0,0,.05); }
   .sec, .lineCard, .progress { box-shadow: 0 3px 0 #dedcd3, 0 8px 16px rgba(0,0,0,.05); }
   .lineCard.learnt { box-shadow: 0 3px 0 #f6d77a, 0 8px 16px rgba(0,0,0,.05); }
   .lineCard.playing { box-shadow: 0 3px 0 var(--play), 0 0 0 1px var(--play); }
-  .big:active, .ctrl:active, .home:active, .sec:active, .editbar button:active, .lineCard:has(.lineMain:active) {
+  .big:active, .ctrl:active, .home:active, .sec:active, .lineCard:has(.lineMain:active) {
     transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.2); }
   .sec .num, .lineCard .bubble, .logo {
     background-image: linear-gradient(rgba(255,255,255,.28), var(--shade, rgba(0,0,0,.10)));
@@ -197,12 +191,10 @@ document.getElementById('logo').innerHTML = MADINAH;
 const fileFor = key => CHORUSES.find(c => c.key === key)?.file || `clips/Trim_Seerah_${key}.mp3`;
 const nameFor = key => CHORUSES.find(c => c.key === key)?.name || `Line ${key}`;
 
-// ---------- grown-up edits (kept in this browser) ----------
-let edits = { lyrics: {}, titles: {} };
-try { edits = Object.assign(edits, JSON.parse(localStorage.getItem('seerahEdits') || '{}')); } catch {}
-const saveEdits = () => { try { localStorage.setItem('seerahEdits', JSON.stringify(edits)); } catch {} };
-const lyric = key => (edits.lyrics[key] ?? BASE[key] ?? '').trim();
-const title = i => edits.titles[i] ?? SECTIONS[i].title;
+const lyric = key => (BASE[key] ?? '').trim();
+const title = i => SECTIONS[i].title;
+// Typed-in lyrics from the old grown-up mode are no longer used; tidy them away
+try { localStorage.removeItem('seerahEdits'); } catch {}
 
 // Lines the child has marked as learnt (kept in this browser)
 let justToggled = null;
@@ -213,7 +205,6 @@ const lineNumbers = i => { const s = SECTIONS[i], out = []; for (let n = s.from;
 const learntCount = i => lineNumbers(i).filter(k => learnt.has(k)).length;
 const currentSection = () => { const m = location.hash.match(/^#section-(\d+)$/); return m && SECTIONS[+m[1] - 1] ? +m[1] - 1 : -1; };
 
-let editing = false;
 let choosing = false;
 let chosen = [];
 
@@ -222,8 +213,9 @@ function route() {
   const m = location.hash.match(/^#section-(\d+)$/);
   const i = m ? +m[1] - 1 : -1;
   choosing = false; chosen = [];
-  $('homeBtn').classList.toggle('hidden', !SECTIONS[i]);
-  if (SECTIONS[i]) renderSection(i); else renderHome();
+  const song = location.hash === '#song';
+  $('homeBtn').classList.toggle('hidden', !SECTIONS[i] && !song);
+  if (song) renderSong(); else if (SECTIONS[i]) renderSection(i); else renderHome();
   window.scrollTo(0, 0);
 }
 
@@ -239,12 +231,10 @@ function renderHome() {
       <p>Listen to each line, repeat it as many times as you like, and put the sections together until you know the whole poem by heart.</p>
       <div class="heroBtns"><button class="big" id="playSong">Play the whole song</button></div>
     </div>
-    ${editBar()}
     <div class="label">Repeat with me!</div>
     <div class="choruses" id="choruses"></div>
     <div class="label">Sections</div>
-    <div class="sections" id="sections"></div>
-    <div class="grown"><button id="grown">${editing ? 'Done editing' : '✏️ Grown-ups: add lyrics'}</button></div>`;
+    <div class="sections" id="sections"></div>`;
   CHORUSES.forEach(c => $('choruses').append(lineCard(c.key, true)));
   SECTIONS.forEach((s, i) => {
     const a = document.createElement('a');
@@ -257,10 +247,41 @@ function renderHome() {
       <div class="num">${i + 1}</div><div><div class="t">${esc(title(i))}</div><div class="n">Lines ${s.from}–${s.to}</div></div></div>`;
     $('sections').append(a);
   });
-  wireEditBar();
-  $('grown').onclick = () => { editing = !editing; route(); };
-  // Whole song: every section in order, with the extra Salawat and La-ilaha-ill-Allah in their places
-  $('playSong').onclick = () => playList(SECTIONS.flatMap((_, i) => sectionKeys(i)), 'Whole song');
+  $('playSong').onclick = () => { location.hash = '#song'; playSong(); };
+  paintPlaying();
+}
+
+// Whole song: every section in order, with the extra Salawat and La-ilaha-ill-Allah in their places
+const songKeys = () => SECTIONS.flatMap((_, i) => sectionKeys(i));
+const SONG = 'Whole song';
+function playSong() { playList(songKeys(), SONG); }
+
+// Page showing every lyric in order; the line being sung lights up and scrolls into view
+function renderSong() {
+  const app = $('app');
+  ['--c', '--on', '--shade'].forEach(p => app.style.removeProperty(p));
+  app.innerHTML = `
+    <div class="eyebrow">Seerah Song by Zain Bikha</div>
+    <h2 class="sectitle">The Whole Song</h2>
+    <div class="actions"><button class="big" id="playFromStart">Play from the start</button></div>
+    <div id="songLines"></div>
+    <div class="nextNav"><a class="big" href="#" style="--c:var(--ink);--on:#fff">🕌 Back to home</a></div>`;
+  let p = 0;
+  SECTIONS.forEach((s, i) => {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = `--c:${COLORS[i % COLORS.length]};--on:${onColor(i)};--shade:${shadeFor(i)}`;
+    wrap.innerHTML = `<div class="label songHead" style="color:var(--c)">${i + 1} · ${esc(title(i))}</div><div class="lines"></div>`;
+    sectionKeys(i).forEach(k => {
+      const card = lineCard(k, CHORUSES.some(c => c.key === k), k);
+      card.dataset.pos = p;
+      const at = p++;
+      // Tapping a line in the song carries on singing the song from there
+      card.querySelector('.lineMain').onclick = () => { playList(songKeys(), SONG); pos = at; start(); };
+      wrap.querySelector('.lines').append(card);
+    });
+    $('songLines').append(wrap);
+  });
+  $('playFromStart').onclick = playSong;
   paintPlaying();
 }
 
@@ -282,10 +303,9 @@ function renderSection(i) {
   app.style.setProperty('--shade', shadeFor(i));
   app.innerHTML = `
     <div class="eyebrow" style="color:var(--c)">Section ${i + 1} · Lines ${s.from}–${s.to}</div>
-    <h2 class="sectitle">${editing ? `<input id="titleIn" value="${esc(title(i))}">` : esc(title(i))}</h2>
-    ${editing ? '' : progressBox(i)}
-    ${editBar()}
-    <div class="actions ${editing ? 'hidden' : ''}">
+    <h2 class="sectitle">${esc(title(i))}</h2>
+    ${progressBox(i)}
+    <div class="actions">
       <button class="big" id="playAll">Play whole section</button>
       <button class="big alt ${choosing ? 'on' : ''}" id="choose">${choosing ? (chosen.length ? `▶️ Play my ${chosen.length}` : '➕ Tap lines to pick') : '➕ Pick my lines'}</button>
     </div>
@@ -293,35 +313,23 @@ function renderSection(i) {
     <div class="lines" id="lines"></div>
     <div class="label">Repeat with me!</div>
     <div class="lines" id="chorusLines"></div>
-    ${nextNav(i)}
-    <div class="grown"><button id="grown">${editing ? 'Done editing' : '✏️ Grown-ups: add lyrics'}</button></div>`;
-  sectionKeys(i).forEach(k => {
-    const isChorus = CHORUSES.some(c => c.key === k);
-    if (isChorus && editing) return;
-    $('lines').append(lineCard(k, isChorus, k));
-  });
+    ${nextNav(i)}`;
+  sectionKeys(i).forEach(k => $('lines').append(lineCard(k, CHORUSES.some(c => c.key === k), k)));
   CHORUSES.forEach(c => $('chorusLines').append(lineCard(c.key, true)));
 
-  $('grown').onclick = () => { editing = !editing; renderSection(i); };
-  wireEditBar();
-  if (editing) {
-    $('titleIn').oninput = e => { edits.titles[i] = e.target.value; saveEdits(); };
-  } else {
-    $('playAll').onclick = () => playList(sectionKeys(i), title(i), i);
-    $('choose').onclick = () => {
-      if (choosing && chosen.length) { playList([...chosen], 'My lines', i); choosing = false; chosen = []; renderSection(i); return; }
-      choosing = true; renderSection(i);
-    };
-    $('cancelPick')?.addEventListener('click', () => { choosing = false; chosen = []; renderSection(i); });
-  }
+  $('playAll').onclick = () => playList(sectionKeys(i), title(i), i);
+  $('choose').onclick = () => {
+    if (choosing && chosen.length) { playList([...chosen], 'My lines', i); choosing = false; chosen = []; renderSection(i); return; }
+    choosing = true; renderSection(i);
+  };
+  $('cancelPick')?.addEventListener('click', () => { choosing = false; chosen = []; renderSection(i); });
   paintPlaying();
 }
 
 // Big button at the bottom of a section that goes on to the next one (or home after the last)
 function nextNav(i) {
-  if (editing) return '';
   const j = i + 1;
-  if (!SECTIONS[j]) return `<div class="nextNav"><a class="big" href="#" style="--c:var(--ink);--on:#fff">🏠 Finished! Back to home</a></div>`;
+  if (!SECTIONS[j]) return `<div class="nextNav"><a class="big" href="#" style="--c:var(--ink);--on:#fff">🕌 Finished! Back to home</a></div>`;
   return `<div class="nextNav"><a class="big" href="#section-${j + 1}" style="--c:${COLORS[j % COLORS.length]};--on:${onColor(j)};--shade:${shadeFor(j)}">Next: ${esc(title(j))} →</a></div>`;
 }
 
@@ -335,21 +343,6 @@ function progressBox(i) {
 
 function lineCard(key, isChorus, shownNum) {
   const c = CHORUSES.find(x => x.key === key);
-  if (editing) {
-    const div = document.createElement('div');
-    div.className = 'lineCard' + (isChorus ? ' chorus' : '');
-    div.innerHTML = `<span class="bubble">${c ? c.icon : shownNum}</span>`;
-    const ta = document.createElement('textarea');
-    ta.dir = 'auto';
-    ta.placeholder = `Type the words for ${nameFor(key)}…`;
-    ta.value = lyric(key);
-    ta.oninput = () => { edits.lyrics[key] = ta.value; saveEdits(); };
-    const listen = document.createElement('button');
-    listen.className = 'icon'; listen.textContent = '🔊'; listen.title = 'Listen';
-    listen.onclick = () => playList([key], nameFor(key));
-    div.append(ta, listen);
-    return div;
-  }
   const card = document.createElement('div');
   card.className = 'lineCard' + (isChorus ? ' chorus' : '') + (learnt.has(key) ? ' learnt' : '') + (key === justToggled ? ' pop' : '');
   card.dataset.key = key;
@@ -375,41 +368,11 @@ function lineCard(key, isChorus, shownNum) {
     justToggled = key; setTimeout(() => { justToggled = null; }, 50);
     saveLearnt();
     const i = currentSection();
-    if (i >= 0) renderSection(i); else renderHome();
+    if (i >= 0) renderSection(i);
+    else if (location.hash === '#song') { const y = scrollY; renderSong(); scrollTo(0, y); }
+    else renderHome();
   };
   return card;
-}
-
-function editBar() {
-  if (!editing) return '';
-  return `<div class="editbar">✏️ <b>Grown-up mode:</b> type the words into each line. They save in this browser straight away.
-    To show them for everyone, download the lyrics file and send it to whoever looks after the website.
-    <div class="row"><button id="dl">⬇️ Download lyrics file</button><button id="resetEdits">Clear my typing</button></div></div>`;
-}
-
-function wireEditBar() {
-  if (!editing) return;
-  $('dl').onclick = downloadLyrics;
-  $('resetEdits').onclick = () => {
-    if (confirm('Clear everything typed in this browser?')) { edits = { lyrics: {}, titles: {} }; saveEdits(); route(); }
-  };
-}
-
-function downloadLyrics() {
-  const q = s => JSON.stringify(s);
-  let out = '// Section titles and lyrics for the Seerah poem.\n// Type each line\'s words between the quotes. Leave it empty ("") to just show the line number.\n\nwindow.SECTIONS = [\n';
-  SECTIONS.forEach((s, i) => { out += `  { title: ${q(title(i))}, from: ${s.from}, to: ${s.to} },\n`; });
-  out += '];\n\n// Extra La-ilaha-ill-Allah ("chorus") or Salawat ("salawat") buttons, placed after a line number.\nwindow.INSERTS = {\n';
-  Object.entries(INSERTS).forEach(([n, k]) => { out += `  ${n}: ${q(k)},\n`; });
-  out += '};\n\nwindow.LYRICS = {\n';
-  out += `  chorus: ${q(lyric('chorus'))},\n  salawat: ${q(lyric('salawat'))},\n`;
-  const last = SECTIONS.length ? SECTIONS[SECTIONS.length - 1].to : 0;
-  for (let n = 1; n <= last; n++) out += `  ${n}: ${q(lyric(String(n)))},\n`;
-  out += '};\n';
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([out], { type: 'text/javascript' }));
-  a.download = 'lyrics.js';
-  a.click();
 }
 
 function esc(s) { return String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch])); }
@@ -457,7 +420,14 @@ audio.addEventListener('error', () => {
 
 function paintPlaying() {
   const key = pos >= 0 ? list[pos] : null;
-  document.querySelectorAll('.lineCard[data-key]').forEach(el => el.classList.toggle('playing', el.dataset.key === key && !audio.paused));
+  const onSongPage = !!$('songLines');
+  document.querySelectorAll('.lineCard[data-key]').forEach(el => {
+    // On the song page, light up the exact spot (La-ilaha-ill-Allah and Salawat appear more than once)
+    const hit = onSongPage && el.dataset.pos !== undefined ? listName === SONG && +el.dataset.pos === pos : el.dataset.key === key;
+    const was = el.classList.contains('playing');
+    el.classList.toggle('playing', hit && !audio.paused);
+    if (onSongPage && hit && !was && !audio.paused) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
   let what = 'Tap a line to listen 🎧';
   if (key) {
     what = list.length > 1 ? `${listName}: ${nameFor(key)} (${pos + 1} of ${list.length})` : nameFor(key);
