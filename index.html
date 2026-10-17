@@ -37,8 +37,8 @@
   .heroBtns { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
 
   .label { font-weight: 700; color: var(--eyebrow); letter-spacing: .12em; text-transform: uppercase; margin: 30px 2px 12px; font-size: .85rem; }
-  .choruses { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  @media (max-width: 480px) { .choruses { grid-template-columns: 1fr; } }
+  .choruses { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+  @media (max-width: 480px) { .choruses { grid-template-columns: minmax(0, 1fr); } }
   .sections { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
   .sec { --c: #ef4444; position: relative; display: flex; align-items: center; gap: 14px; background: var(--card);
     border: 1px solid var(--line); border-radius: 14px; padding: 14px; transition: border-color .15s, transform .1s; }
@@ -75,7 +75,7 @@
   .actions .big { flex: 1; min-width: 150px; }
   .hint { background: #fef6dc; border: 1px solid #f6e3a6; border-radius: 12px; padding: 10px 14px; margin: -4px 0 14px; font-size: .95rem; }
 
-  .lines { display: grid; gap: 8px; }
+  .lines { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .lineCard { --c2: var(--c); display: flex; align-items: center; gap: 14px; width: 100%; text-align: start;
     background: var(--card); border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line);
     transition: border-color .15s, background .15s; position: relative; }
@@ -93,6 +93,7 @@
   .lineCard .words { flex: 1; font-size: 1.15rem; font-weight: 500; white-space: pre-line; font-style: italic; }
   .lineCard .words:not(.empty) { font-size: 1.25rem; }
   .lineCard .words.empty { color: var(--muted); }
+  .lineCard .words { min-width: 0; }
   .lineCard .words .ln { display: block; }
   .lineCard .words .ln:dir(rtl) { font-style: normal; font-size: 1.35rem; font-family: "Amiri", "Traditional Arabic", serif; }
   .bubble svg { width: 30px; height: 30px; display: block; }
@@ -369,8 +370,22 @@ function lineCard(key, isChorus, shownNum) {
     else if (location.hash === '#song') { const y = scrollY; renderSong(); scrollTo(0, y); }
     else renderHome();
   };
+  // The Salawat words stay on one line, shrinking to fit narrow phone screens
+  if (key === 'salawat') queueMicrotask(fitSalawat);
   return card;
 }
+
+function fitOneLine(el) {
+  el.style.whiteSpace = 'nowrap';
+  el.style.fontSize = '';
+  let size = parseFloat(getComputedStyle(el).fontSize);
+  while (el.scrollWidth > el.clientWidth && size > 14) el.style.fontSize = (size -= 0.5) + 'px';
+  // On a very narrow screen, wrapping beats text too small to read
+  if (el.scrollWidth > el.clientWidth) el.style.whiteSpace = '';
+}
+const fitSalawat = () => document.querySelectorAll('.lineCard[data-key="salawat"] .ln').forEach(fitOneLine);
+window.addEventListener('resize', fitSalawat);
+document.fonts?.ready.then(fitSalawat);
 
 function esc(s) { return String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch])); }
 
