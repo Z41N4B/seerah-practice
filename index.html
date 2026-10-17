@@ -74,6 +74,10 @@
   .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
   .actions .big { flex: 1; min-width: 150px; }
   .hint { background: #fef6dc; border: 1px solid #f6e3a6; border-radius: 12px; padding: 10px 14px; margin: -4px 0 14px; font-size: .95rem; }
+  .picked { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 2px; background: #fff; border: 1px solid #f0d78a; border-radius: 999px; padding: 3px 4px 3px 12px; font-weight: 600; font-size: .9rem; box-shadow: 0 2px 0 #f0d78a; }
+  .chip button { width: 28px; height: 28px; border-radius: 999px; font-size: 1.1rem; line-height: 1; color: #b91c1c; }
+  .chip button:hover { background: #fee2e2; }
 
   .lines { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .lineCard { --c2: var(--c); display: flex; align-items: center; gap: 14px; width: 100%; text-align: start;
@@ -151,6 +155,7 @@
 <header class="site"><div class="inner">
   <a class="logo" href="#" id="logo" aria-label="Home"></a>
   <a class="brand" href="#">Seerah Song</a>
+  <button class="home hidden" id="backBtn">← Back</button>
 </div></header>
 <main id="app"></main>
 
@@ -215,6 +220,7 @@ function route() {
   choosing = false; chosen = [];
   const song = location.hash === '#song';
   if (song) renderSong(); else if (SECTIONS[i]) renderSection(i); else renderHome();
+  $('backBtn').classList.toggle('hidden', !song && !SECTIONS[i]);
   window.scrollTo(0, 0);
 }
 
@@ -307,7 +313,8 @@ function renderSection(i) {
       <button class="big" id="playAll">Play whole section</button>
       <button class="big alt ${choosing ? 'on' : ''}" id="choose">${choosing ? (chosen.length ? `▶️ Play my ${chosen.length}` : '➕ Tap lines to pick') : '➕ Pick my lines'}</button>
     </div>
-    ${choosing ? '<div class="hint">Tap the lines you want, in the order you want. You can add La-ilaha-ill-Allah and Salawat too! Then press <b>Play my lines</b>. <button id="cancelPick" style="text-decoration:underline">Cancel</button></div>' : ''}
+    ${choosing ? `<div class="hint">Tap the lines you want, in the order you want. You can add La-ilaha-ill-Allah and Salawat too! Then press <b>Play my lines</b>. <button id="cancelPick" style="text-decoration:underline">Cancel</button>
+      ${chosen.length ? `<div class="picked">${chosen.map((k, j) => `<span class="chip">${j + 1}. ${esc(nameFor(k))}<button data-remove="${j}" aria-label="Remove">×</button></span>`).join('')}</div>` : ''}</div>` : ''}
     <div class="lines" id="lines"></div>
     <div class="label">Repeat with me!</div>
     <div class="lines" id="chorusLines"></div>
@@ -321,6 +328,7 @@ function renderSection(i) {
     choosing = true; renderSection(i);
   };
   $('cancelPick')?.addEventListener('click', () => { choosing = false; chosen = []; renderSection(i); });
+  document.querySelectorAll('[data-remove]').forEach(b => b.onclick = () => { chosen.splice(+b.dataset.remove, 1); renderSection(i); });
   paintPlaying();
 }
 
@@ -371,7 +379,7 @@ function lineCard(key, isChorus, shownNum) {
     else renderHome();
   };
   // The Salawat words stay on one line, shrinking to fit narrow phone screens
-  if (key === 'salawat') queueMicrotask(fitSalawat);
+  if (key === 'salawat' || key === 'chorus') queueMicrotask(fitSalawat);
   return card;
 }
 
@@ -383,7 +391,13 @@ function fitOneLine(el) {
   // On a very narrow screen, wrapping beats text too small to read
   if (el.scrollWidth > el.clientWidth) el.style.whiteSpace = '';
 }
-const fitSalawat = () => document.querySelectorAll('.lineCard[data-key="salawat"] .ln').forEach(fitOneLine);
+// Fit the Salawat on one line, then give La-ilaha-ill-Allah the same size so they match
+const fitSalawat = () => {
+  const sal = [...document.querySelectorAll('.lineCard[data-key="salawat"] .ln')];
+  sal.forEach(fitOneLine);
+  const size = sal.length ? getComputedStyle(sal[0]).fontSize : '';
+  document.querySelectorAll('.lineCard[data-key="chorus"] .ln').forEach(el => { el.style.fontSize = size; });
+};
 window.addEventListener('resize', fitSalawat);
 document.fonts?.ready.then(fitSalawat);
 
@@ -463,7 +477,13 @@ $('stop').onclick = stop;
 $('repeat').onclick = () => { repeat = !repeat; $('repeat').classList.toggle('on', repeat); };
 $('slow').onclick = () => { slow = !slow; audio.playbackRate = slow ? 0.75 : 1; $('slow').classList.toggle('on', slow); };
 
-window.addEventListener('hashchange', route);
+// Back: return to the previous page in the app, or home if this page was opened directly
+const visited = [location.hash];
+window.addEventListener('hashchange', () => {
+  if (visited.length > 1 && visited[visited.length - 2] === location.hash) visited.pop(); else visited.push(location.hash);
+  route();
+});
+$('backBtn').onclick = () => { if (visited.length > 1) history.back(); else location.hash = ''; };
 route();
 </script>
 </body>
