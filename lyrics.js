@@ -109,6 +109,6 @@ window.LYRICS = {
   86: "Joyous tidings to those who believed when he called to Allah;\nSince he was the best of prophets, we became the best Ummah!",
   87: "More belov-ed than our parents is our dear Rasulullah,\nAllahumma send your blessings on the seal of Anbiya.",
   88: "Allahumma grant us Jannah with Nabiy- Al Mustafa,\nالصلاة والسلام عليك خير خلق الله.",
-  chorus: "",
-  salawat: "",
+  chorus: "لا إله إلا الله\nمحمد رسول الله، عليه صلاة الله",
+  salawat: "الصلاة والسلام على النبي رسول الله",
 };
