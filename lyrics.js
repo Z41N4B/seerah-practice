@@ -103,7 +103,7 @@ window.LYRICS = {
   80: "So complete in form and meaning, and from every blemish, free,\nAs if he had been created, just the way he’d want to be.",
   81: "Best of those who ever lived or ever walked upon the earth;\nSinless since the bless-ed day on which his mother gave him birth.",
   82: "He was one of Bani Adam, but between himself and them,\nWas as though mankind were stones, and as though he, a priceless gem.",
-  83: "Even if he had not come with any miracle or sign,\nJust the sight of him would tell you that he came from the Divine.",
+  83: "Even if he had not come with any miracle or sign,\nJust the sight of him would tell you that he was sent from the Divine.",
   84: "Never should we think that by these words the Prophet has been praised;\nRather through his bless-ed mention, it’s our words that have been raised.",
   85: "For Allah Himself has praised him, when He said so perfectly\n{Truly, you are on a station of sublime integrity!}",
   86: "Joyous tidings to those who believed when he called to Allah;\nSince he was the best of prophets, we became the best Ummah!",
