@@ -57,6 +57,7 @@
   .big:not(.alt):not(.on) { color: var(--on, #fff); }
   .sec .t { font-weight: 700; font-size: 1.15rem; line-height: 1.2; }
   .sec .n { color: var(--muted); font-size: .9rem; }
+  .readCard + .readCard { margin-top: 10px; }
   .readCard { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line);
     border-radius: 14px; padding: 14px; box-shadow: 0 3px 0 #dedcd3, 0 8px 16px rgba(0,0,0,.05); transition: transform .08s, box-shadow .08s; }
   .readCard:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.2); }
@@ -259,6 +260,12 @@ function renderHome() {
       <span class="readIcon">📖</span>
       <span><span class="t">Read the full story of the Seerah</span>
       <span class="n">When the Moon Split · free book (PDF)</span></span>
+      <span class="readGo">↗</span>
+    </a>
+    <a class="readCard" href="https://www.kalamullah.com/Books/ShamaailTirmidhi-ImamTirmidhi-IntroAndPage1-223.pdf" target="_blank" rel="noopener">
+      <span class="readIcon">📗</span>
+      <span><span class="t">The Prophet’s ﷺ character and appearance</span>
+      <span class="n">Shama’il at-Tirmidhi · free book (PDF)</span></span>
       <span class="readGo">↗</span>
     </a>`;
   CHORUSES.forEach(c => $('choruses').append(lineCard(c.key, true)));
