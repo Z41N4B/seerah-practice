@@ -65,6 +65,7 @@
     box-shadow: inset 0 -3px 0 rgba(0,0,0,.08), 0 2px 5px rgba(0,0,0,.12); }
   .readCard .t { display: block; font-weight: 700; font-size: 1.15rem; line-height: 1.2; }
   .readCard .n { display: block; color: var(--muted); font-size: .9rem; }
+  .readCard .n.dl { color: #a16207; font-weight: 600; margin-top: 2px; }
   .readCard .readGo { margin-left: auto; font-size: 1.3rem; color: var(--muted); }
   .sec .stars { position: absolute; top: 8px; right: 10px; font-size: .8rem; font-weight: 700; color: var(--muted); }
   .sec .stars.done { color: #a16207; }
@@ -259,13 +260,15 @@ function renderHome() {
     <a class="readCard" href="https://www.kalamullah.com/Books/When%20The%20Moon%20Split.pdf" target="_blank" rel="noopener">
       <span class="readIcon">📖</span>
       <span><span class="t">Read the full story of the Seerah</span>
-      <span class="n">When the Moon Split · free book (PDF)</span></span>
+      <span class="n">When the Moon Split</span>
+      <span class="n dl">Click here to download the book (PDF)</span></span>
       <span class="readGo">↗</span>
     </a>
     <a class="readCard" href="https://www.kalamullah.com/Books/ShamaailTirmidhi-ImamTirmidhi-IntroAndPage1-223.pdf" target="_blank" rel="noopener">
       <span class="readIcon">📗</span>
       <span><span class="t">The Prophet’s ﷺ character and appearance</span>
-      <span class="n">Shama’il at-Tirmidhi · free book (PDF)</span></span>
+      <span class="n">Shama’il at-Tirmidhi</span>
+      <span class="n dl">Click here to download the book (PDF)</span></span>
       <span class="readGo">↗</span>
     </a>`;
   CHORUSES.forEach(c => $('choruses').append(lineCard(c.key, true)));
