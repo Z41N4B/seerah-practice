@@ -1,0 +1,15 @@
+# Learn the Seerah
+
+> Learn the Seerah is a free, browser-based app for learning the life of the Prophet Muhammad, peace be upon him, through the Seerah Song by Zain Bikha. Made by Ummah Apps. URL: https://seerah.ummahapps.ai/
+
+## What it does
+
+- Plays the song line by line, section by section, or as a whole.
+- Repeat a line as many times as you like, or slow it down.
+- Follow the lyrics and star each line you learn. Stars are saved in the browser on your device.
+- Free, with no sign-up.
+
+## Links
+
+- App: https://seerah.ummahapps.ai/
+- Publisher: https://ummahapps.ai/

@@ -11,6 +11,89 @@
 <meta property="og:description" content="Learn the life of the Prophet ﷺ through song: listen line by line, repeat each verse, follow the lyrics and star every line you learn.">
 <meta property="og:url" content="https://seerah.ummahapps.ai/">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Ummah Apps">
+<meta property="og:image" content="https://seerah.ummahapps.ai/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Learn the Seerah through song">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Learn the Seerah – Through the Seerah Song by Zain Bikha">
+<meta name="twitter:description" content="Learn the life of the Prophet ﷺ through song: listen line by line, repeat each verse, follow the lyrics and star every line you learn.">
+<meta name="twitter:image" content="https://seerah.ummahapps.ai/og-image.png">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://ummahapps.ai/#org",
+   "name": "Ummah Apps",
+   "url": "https://ummahapps.ai/"
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://seerah.ummahapps.ai/#site",
+   "name": "Learn the Seerah",
+   "url": "https://seerah.ummahapps.ai/",
+   "inLanguage": "en",
+   "publisher": {
+    "@id": "https://ummahapps.ai/#org"
+   }
+  },
+  {
+   "@type": "WebApplication",
+   "@id": "https://seerah.ummahapps.ai/#app",
+   "name": "Learn the Seerah",
+   "url": "https://seerah.ummahapps.ai/",
+   "description": "Learn the life of the Prophet ﷺ through song: listen line by line, repeat each verse, follow the lyrics and star every line you learn.",
+   "applicationCategory": "EducationalApplication",
+   "operatingSystem": "Any (web browser)",
+   "browserRequirements": "Requires JavaScript.",
+   "inLanguage": "en",
+   "isAccessibleForFree": true,
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "GBP"
+   },
+   "image": "https://seerah.ummahapps.ai/og-image.png",
+   "publisher": {
+    "@id": "https://ummahapps.ai/#org"
+   }
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Is Learn the Seerah free?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. It is free and needs no sign-up. It runs in your web browser."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How does it work?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Tap a line to hear it, repeat it as many times as you like, slow it down and star each line you learn. When you are ready, put the sections together and play the whole song."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Where is my progress saved?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "The lines you star are saved in your browser on this device."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Amiri:wght@400;700&display=swap">
 <style>
@@ -22,7 +105,7 @@
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
     font: 18px/1.5 "Roboto Condensed", "Arial Narrow", system-ui, sans-serif; }
-  main { max-width: 760px; margin: 0 auto; padding: 28px 16px 180px; }
+  main { max-width: 760px; margin: 0 auto; padding: 28px 16px 24px; }
   a { color: inherit; text-decoration: none; }
   button, input, textarea { font: inherit; color: inherit; }
   button { cursor: pointer; border: none; background: none; -webkit-tap-highlight-color: transparent; }
@@ -166,6 +249,13 @@
   .bubble svg, .logo svg { filter: drop-shadow(0 1.5px 1px rgba(0,0,0,.3)); }
   .icon, .ctrl .e, .lineCard.learnt .starBtn { filter: drop-shadow(0 2px 1.5px rgba(0,0,0,.22)); }
   .progress .pbar div, .bar div { background-image: linear-gradient(rgba(255,255,255,.35), rgba(0,0,0,.08)); }
+  .about { max-width: 760px; margin: 0 auto; padding: 0 16px 180px; color: var(--muted); font-size: 1rem; }
+  .about h2 { color: var(--text); font-size: 1.2rem; margin: 0 0 6px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .about h3 { color: var(--text); font-size: 1.05rem; margin: 14px 0 6px; }
+  .about p { margin: 0 0 8px; }
+  .about details { border-top: 1px solid var(--line); padding: 8px 0; }
+  .about summary { color: var(--text); cursor: pointer; font-weight: 600; }
+  .about a { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -174,7 +264,20 @@
   <a class="brand" href="#">Learn the Seerah</a>
   <button class="home hidden" id="backBtn">← Back</button>
 </div></header>
-<main id="app"></main>
+<main id="app">
+  <h1>Learn the Seerah through the Seerah Song by Zain Bikha</h1>
+  <p>Listen to each line, repeat it as many times as you like, and put the sections together until you know the whole poem by heart.</p>
+  <noscript><p>Learn the Seerah needs JavaScript to play the song. Please turn it on, or open this page in another browser.</p></noscript>
+</main>
+<footer class="about">
+  <h2>About Learn the Seerah</h2>
+  <p>Learn the Seerah teaches the life of the Prophet ﷺ through the Seerah Song by Zain Bikha, one line at a time.</p>
+  <h3>Questions</h3>
+  <details><summary>Is Learn the Seerah free?</summary><p>Yes. It is free and needs no sign-up. It runs in your web browser.</p></details>
+  <details><summary>How does it work?</summary><p>Tap a line to hear it, repeat it as many times as you like, slow it down and star each line you learn. When you are ready, put the sections together and play the whole song.</p></details>
+  <details><summary>Where is my progress saved?</summary><p>The lines you star are saved in your browser on this device.</p></details>
+  <p class="made">Learn the Seerah is part of <a href="https://ummahapps.ai/">Ummah Apps</a>.</p>
+</footer>
 
 <div class="player">
   <div class="inner">
