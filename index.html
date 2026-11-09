@@ -142,6 +142,45 @@
   .sec .t { font-weight: 700; font-size: 1.15rem; line-height: 1.2; }
   .sec .n { color: var(--muted); font-size: .9rem; }
   .readCard + .readCard { margin-top: 10px; }
+  /* Daily practice */
+  .todayCard { display: flex; align-items: center; gap: 14px; margin-top: 22px; background: var(--card); border: 1px solid #f6e3a6;
+    border-radius: 14px; padding: 14px; box-shadow: 0 3px 0 #f0d78a, 0 8px 16px rgba(0,0,0,.05); background-image: linear-gradient(#fffdf5, #fff8e1); }
+  .todayCard:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+  .todayCard.complete { border-color: #86efac; box-shadow: 0 3px 0 #86efac, 0 8px 16px rgba(0,0,0,.05); background-image: linear-gradient(#f6fff9, #e8fbef); }
+  .todayCard .flame { width: 56px; height: 56px; border-radius: 14px; background: #fff; display: grid; place-items: center; flex: none; font-size: 1.3rem; line-height: 1;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,.08), 0 2px 5px rgba(0,0,0,.12); }
+  .todayCard .flame b { font-size: 1.1rem; }
+  .todayCard .t { display: block; font-weight: 700; font-size: 1.15rem; line-height: 1.2; }
+  .todayCard .n { display: block; color: var(--muted); font-size: .9rem; }
+  .todayCard .readGo { margin-left: auto; font-size: 1.3rem; color: var(--muted); }
+  .streakBox { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 16px;
+    box-shadow: 0 3px 0 #dedcd3, 0 8px 16px rgba(0,0,0,.05); }
+  .streakNums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); text-align: center; gap: 6px; }
+  .streakNums b { display: block; font-size: 1.6rem; line-height: 1.1; }
+  .streakNums span { color: var(--muted); font-size: .85rem; }
+  .week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin: 14px 0 10px; text-align: center; }
+  .day .dn { display: block; font-size: .8rem; color: var(--muted); font-weight: 600; }
+  .day .dot { display: grid; place-items: center; width: 34px; height: 34px; margin: 4px auto 0; border-radius: 50%; background: var(--line); color: #fff; font-weight: 700; }
+  .day.part .dot { background: #fde68a; }
+  .day.full .dot { background: var(--play); box-shadow: inset 0 -2px 0 rgba(0,0,0,.15); }
+  .day.today .dot { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .streakBox .pbar { height: 8px; background: var(--line); border-radius: 999px; overflow: hidden; }
+  .streakBox .pbar div { height: 100%; background: var(--gold); border-radius: 999px; }
+  .task { --c: #22c55e; background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--c); border-radius: 14px; padding: 14px; margin-bottom: 14px;
+    box-shadow: 0 3px 0 #dedcd3, 0 8px 16px rgba(0,0,0,.05); }
+  .task.done { background: #f6fff9; }
+  .task .lines { margin: 12px 0; }
+  .task .actions { margin-bottom: 0; }
+  .taskHead { display: flex; gap: 12px; align-items: center; }
+  .taskHead .taskIcon { font-size: 1.6rem; flex: none; }
+  .taskHead .t { display: block; font-weight: 700; font-size: 1.2rem; line-height: 1.2; }
+  .taskHead .n { display: block; color: var(--muted); font-size: .92rem; }
+  .planBox { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 12px 14px; font-weight: 600; }
+  .seg { display: inline-flex; gap: 6px; }
+  .seg button { width: 44px; height: 40px; border-radius: 10px; border: 1px solid var(--line); font-weight: 700; background-image: linear-gradient(#fff, #f7f6f2); box-shadow: 0 2px 0 #d9d7ce; }
+  .seg button.on { background: var(--ink); color: #fff; border-color: var(--ink); background-image: none; }
+  .note { color: var(--muted); font-size: .85rem; text-align: center; margin-top: 14px; }
   .readCard { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line);
     border-radius: 14px; padding: 14px; box-shadow: 0 3px 0 #dedcd3, 0 8px 16px rgba(0,0,0,.05); transition: transform .08s, box-shadow .08s; }
   .readCard:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.2); }
@@ -323,12 +362,92 @@ try { localStorage.removeItem('seerahEdits'); } catch {}
 
 // Lines the child has marked as learnt (kept in this browser)
 let justToggled = null;
-let learnt = new Set();
-try { learnt = new Set(JSON.parse(localStorage.getItem('seerahLearnt') || '[]')); } catch {}
-const saveLearnt = () => { try { localStorage.setItem('seerahLearnt', JSON.stringify([...learnt])); } catch {} };
+const load = (k, fallback) => { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? fallback; } catch { return fallback; } };
+const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const dayStr = (d = new Date()) => d.toLocaleDateString('en-CA');   // YYYY-MM-DD in the viewer's time zone
+const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return dayStr(d); };
+const OLD_DAY = '2000-01-01';   // lines starred before the tracker existed count as long-learnt
+
+// When each line was learnt: { "12": "2026-11-09", ... }
+let learntAt = load('seerahLearntAt', null);
+if (!learntAt) {
+  learntAt = {};
+  load('seerahLearnt', []).forEach(k => { learntAt[k] = OLD_DAY; });
+}
+let learnt = new Set(Object.keys(learntAt));
+const saveLearnt = () => {
+  [...learnt].forEach(k => { if (!learntAt[k]) learntAt[k] = dayStr(); });
+  Object.keys(learntAt).forEach(k => { if (!learnt.has(k)) delete learntAt[k]; });
+  store('seerahLearntAt', learntAt);
+  store('seerahLearnt', [...learnt]);
+  markNewDone();
+};
 const lineNumbers = i => { const s = SECTIONS[i], out = []; for (let n = s.from; n <= s.to; n++) out.push(String(n)); return out; };
 const learntCount = i => lineNumbers(i).filter(k => learnt.has(k)).length;
 const currentSection = () => { const m = location.hash.match(/^#section-(\d+)$/); return m && SECTIONS[+m[1] - 1] ? +m[1] - 1 : -1; };
+
+// ---------- daily practice (like a hifdh tracker) ----------
+// Each day: learn a few NEW lines, revise RECENT lines (learnt in the last week),
+// and revise one rotating chunk of OLDER lines. Finishing all three keeps the streak going.
+const ALL_LINES = SECTIONS.length ? lineNumbersRange(SECTIONS[0].from, SECTIONS[SECTIONS.length - 1].to) : [];
+function lineNumbersRange(a, b) { const out = []; for (let n = a; n <= b; n++) out.push(String(n)); return out; }
+const RECENT_DAYS = 7, OLD_CHUNK = 10;
+let plan = Object.assign({ perDay: 2 }, load('seerahPlan', {}));
+let log = load('seerahLog', {});   // { "2026-11-09": { new: true, recent: true, old: true } }
+const savePlan = () => store('seerahPlan', plan);
+const saveLog = () => store('seerahLog', log);
+const TASK = { new: 'New lines', recent: 'Recent revision', old: 'Older revision' };
+
+function todayPlan() {
+  const today = dayStr(), weekAgo = daysAgo(RECENT_DAYS);
+  const learntToday = ALL_LINES.filter(k => learntAt[k] === today);
+  const notYet = ALL_LINES.filter(k => !learnt.has(k));
+  const newLines = [...learntToday, ...notYet.slice(0, Math.max(0, plan.perDay - learntToday.length))];
+  const recent = ALL_LINES.filter(k => learntAt[k] && learntAt[k] < today && learntAt[k] >= weekAgo);
+  const older = ALL_LINES.filter(k => learntAt[k] && learntAt[k] < weekAgo);
+  // Rotate through the older lines a chunk at a time: one chunk per day the older revision is done
+  const chunks = Math.ceil(older.length / OLD_CHUNK);
+  const doneBefore = Object.keys(log).filter(d => d < today && log[d].old).length;
+  const c = chunks ? doneBefore % chunks : 0;
+  const old = older.slice(c * OLD_CHUNK, c * OLD_CHUNK + OLD_CHUNK);
+  const t = log[today] || {};
+  return {
+    newLines, recent, old,
+    done: {
+      new: !!t.new || newLines.length === 0,
+      recent: !!t.recent || recent.length === 0,
+      old: !!t.old || old.length === 0,
+    },
+    learntToday: learntToday.length,
+  };
+}
+const dayComplete = d => { const t = log[d]; return !!(t && t.new && t.recent && t.old); };
+function markTask(task) {
+  const today = dayStr();
+  log[today] = Object.assign({}, log[today], { [task]: true });
+  // A task with nothing in it counts as done, so an empty day can still be completed
+  const p = todayPlan();
+  ['new', 'recent', 'old'].forEach(k => { if (p.done[k]) log[today][k] = true; });
+  saveLog();
+}
+function markNewDone() {
+  const p = todayPlan();
+  if (p.newLines.length && p.newLines.every(k => learnt.has(k))) markTask('new');
+}
+function streak() {
+  let n = 0, i = dayComplete(dayStr()) ? 0 : 1;
+  while (dayComplete(daysAgo(i))) { n++; i++; }
+  return n;
+}
+function bestStreak() {
+  const days = Object.keys(log).filter(dayComplete).sort();
+  let best = 0, run = 0, prev = null;
+  days.forEach(d => {
+    const gap = prev ? Math.round((new Date(d) - new Date(prev)) / 864e5) : 0;
+    run = gap === 1 ? run + 1 : 1; best = Math.max(best, run); prev = d;
+  });
+  return best;
+}
 
 let choosing = false;
 let chosen = [];
@@ -338,9 +457,9 @@ function route() {
   const m = location.hash.match(/^#section-(\d+)$/);
   const i = m ? +m[1] - 1 : -1;
   choosing = false; chosen = [];
-  const song = location.hash === '#song';
-  if (song) renderSong(); else if (SECTIONS[i]) renderSection(i); else renderHome();
-  $('backBtn').classList.toggle('hidden', !song && !SECTIONS[i]);
+  const song = location.hash === '#song', today = location.hash === '#today';
+  if (today) renderToday(); else if (song) renderSong(); else if (SECTIONS[i]) renderSection(i); else renderHome();
+  $('backBtn').classList.toggle('hidden', !song && !today && !SECTIONS[i]);
   window.scrollTo(0, 0);
 }
 
@@ -356,6 +475,7 @@ function renderHome() {
       <p>Listen to each line, repeat it as many times as you like, and put the sections together until you know the whole poem by heart.</p>
       <div class="heroBtns"><button class="big" id="playSong">Play the whole song</button></div>
     </div>
+    ${todayCard()}
     <div class="label">Repeat with me!</div>
     <div class="choruses" id="choruses"></div>
     <div class="label">Sections</div>
@@ -389,6 +509,92 @@ function renderHome() {
   });
   $('playSong').onclick = () => { location.hash = '#song'; playSong(); };
   paintPlaying();
+}
+
+// Home page summary of today's practice
+function todayCard() {
+  const p = todayPlan(), s = streak();
+  const doneCount = ['new', 'recent', 'old'].filter(k => p.done[k]).length;
+  const allDone = dayComplete(dayStr());
+  return `<a class="todayCard ${allDone ? 'complete' : ''}" href="#today">
+    <span class="flame">${s ? '🔥' : '🌱'}<b>${s}</b></span>
+    <span class="tc"><span class="t">${allDone ? 'Today’s practice is done! 🎉' : 'Today’s practice'}</span>
+      <span class="n">${s ? `${s}-day streak` : 'Start your streak today'} · ${doneCount} of 3 tasks done</span></span>
+    <span class="readGo">→</span></a>`;
+}
+
+function weekStrip() {
+  const names = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  let html = '';
+  for (let i = 6; i >= 0; i--) {
+    const d = daysAgo(i), t = log[d] || {};
+    const parts = ['new', 'recent', 'old'].filter(k => t[k]).length;
+    const cls = dayComplete(d) ? 'full' : parts ? 'part' : '';
+    html += `<span class="day ${cls} ${i === 0 ? 'today' : ''}"><span class="dn">${names[new Date(d + 'T12:00').getDay()]}</span><span class="dot">${dayComplete(d) ? '✓' : ''}</span></span>`;
+  }
+  return `<div class="week">${html}</div>`;
+}
+
+function taskBox(key, emoji, heading, help, keys, done, color) {
+  const playable = keys.length > 0;
+  return `<div class="task ${done ? 'done' : ''}" style="--c:${color}">
+    <div class="taskHead">
+      <span class="taskIcon">${done ? '✅' : emoji}</span>
+      <span><span class="t">${heading}</span><span class="n">${help}</span></span>
+    </div>
+    ${playable ? `<div class="lines" id="task-${key}"></div>
+    <div class="actions">
+      <button class="big" data-play="${key}">Play ${keys.length > 1 ? `all ${keys.length}` : 'it'}</button>
+      ${key !== 'new' ? `<button class="big alt" data-done="${key}">${done ? '✓ Done' : 'Mark as done'}</button>` : ''}
+    </div>` : ''}
+  </div>`;
+}
+
+function renderToday() {
+  const app = $('app');
+  ['--c', '--on', '--shade'].forEach(p => app.style.removeProperty(p));
+  const p = todayPlan(), s = streak(), best = bestStreak();
+  const total = ALL_LINES.length, got = ALL_LINES.filter(k => learnt.has(k)).length;
+  const allDone = dayComplete(dayStr());
+  const newHelp = p.newLines.length === 0 ? 'MashaAllah, every line is learnt! Keep revising.'
+    : `Listen and repeat, then tap ☆ when you know each one (${Math.min(p.learntToday, p.newLines.length)} of ${p.newLines.length} done)`;
+  app.innerHTML = `
+    <div class="eyebrow">Learn the Seerah</div>
+    <h2 class="sectitle">Today’s Practice</h2>
+    <div class="streakBox">
+      <div class="streakNums">
+        <div><b>${s ? '🔥 ' : ''}${s}</b><span>day streak</span></div>
+        <div><b>${best}</b><span>best streak</span></div>
+        <div><b>${got}/${total}</b><span>lines learnt</span></div>
+      </div>
+      ${weekStrip()}
+      <div class="pbar"><div style="width:${100 * got / total}%"></div></div>
+    </div>
+    ${allDone ? '<div class="progress done">🎉 MashaAllah! Today’s practice is complete. See you tomorrow, in sha Allah!</div>' : ''}
+    ${taskBox('new', '🌱', '1 · New lines', newHelp, p.newLines, p.done.new, '#22c55e')}
+    ${taskBox('recent', '🔁', '2 · Recent revision', p.recent.length ? `Lines learnt in the last ${RECENT_DAYS} days. Play them through once.` : 'Lines you learn will come back here for a week of revision.', p.recent, p.done.recent, '#0ea5e9')}
+    ${taskBox('old', '📚', '3 · Older revision', p.old.length ? `A different set of older lines each day, so nothing is forgotten.` : 'After a week, lines move here so you keep revising them.', p.old, p.done.old, '#a855f7')}
+    <div class="planBox">
+      <span>New lines each day</span>
+      <span class="seg">${[1, 2, 3, 5].map(n => `<button data-per="${n}" class="${plan.perDay === n ? 'on' : ''}">${n}</button>`).join('')}</span>
+    </div>
+    <p class="note">Your progress is saved on this phone or computer.</p>`;
+  const lists = { new: p.newLines, recent: p.recent, old: p.old };
+  Object.entries(lists).forEach(([k, keys]) => { const box = $('task-' + k); if (box) keys.forEach(key => box.append(lineCard(key, false, key))); });
+  document.querySelectorAll('[data-play]').forEach(b => b.onclick = () => playList(lists[b.dataset.play], TASK[b.dataset.play]));
+  document.querySelectorAll('[data-done]').forEach(b => b.onclick = () => { markTask(b.dataset.done); refresh(); });
+  document.querySelectorAll('[data-per]').forEach(b => b.onclick = () => { plan.perDay = +b.dataset.per; savePlan(); refresh(); });
+  paintPlaying();
+}
+
+// Redraw the current page without jumping back to the top
+function refresh() {
+  const y = scrollY, i = currentSection();
+  if (location.hash === '#today') renderToday();
+  else if (i >= 0) renderSection(i);
+  else if (location.hash === '#song') renderSong();
+  else renderHome();
+  scrollTo(0, y);
 }
 
 // Whole song: every section in order, with the extra Salawat and La-ilaha-ill-Allah in their places
@@ -508,10 +714,7 @@ function lineCard(key, isChorus, shownNum) {
     if (learnt.has(key)) learnt.delete(key); else learnt.add(key);
     justToggled = key; setTimeout(() => { justToggled = null; }, 50);
     saveLearnt();
-    const i = currentSection();
-    if (i >= 0) renderSection(i);
-    else if (location.hash === '#song') { const y = scrollY; renderSong(); scrollTo(0, y); }
-    else renderHome();
+    refresh();
   };
   // The Salawat words stay on one line, shrinking to fit narrow phone screens
   if (key === 'salawat' || key === 'chorus') queueMicrotask(fitSalawat);
@@ -569,6 +772,9 @@ function stop() {
 audio.addEventListener('ended', () => {
   if (pos < list.length - 1) { pos++; start(); return; }
   loops++;
+  // Listening all the way through a revision list ticks that task off for today
+  const task = Object.keys(TASK).find(k => TASK[k] === listName && k !== 'new');
+  if (task && !(log[dayStr()] || {})[task]) { markTask(task); if (location.hash === '#today' || !location.hash) refresh(); }
   if (repeat) { gapTimer = setTimeout(() => { gapTimer = null; pos = 0; start(); }, 1000); }
   paintPlaying();
 });
