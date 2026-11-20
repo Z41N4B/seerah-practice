@@ -4,6 +4,8 @@
 
 ## What it does
 
+- The front page has a card for each part of the app: The Seerah Song (with the lines learnt and the streak), and books to read more: When the Moon Split (the full story of the Seerah) and Shama’il at-Tirmidhi (the Prophet’s character and appearance, peace be upon him), as PDF downloads.
+- The Seerah Song page has today’s practice, the choruses to repeat, the 10 sections and the whole song.
 - Plays the song line by line, section by section, or as a whole.
 - Repeat a line as many times as you like, or slow it down.
 - Follow the lyrics and star each line you learn. Stars are saved in the browser on your device.

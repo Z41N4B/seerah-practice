@@ -142,6 +142,10 @@
   .sec .t { font-weight: 700; font-size: 1.15rem; line-height: 1.2; }
   .sec .n { color: var(--muted); font-size: .9rem; }
   .readCard + .readCard { margin-top: 10px; }
+  body.quiet .player { display: none; }
+  .menuCard { padding: 18px; }
+  .menuCard .readIcon { width: 60px; height: 60px; font-size: 2rem; background: #e0f2fe; }
+  .menuCard .t { font-size: 1.3rem; }
   /* Daily practice */
   .todayCard { display: flex; align-items: center; gap: 14px; margin-top: 22px; background: var(--card); border: 1px solid #f6e3a6;
     border-radius: 14px; padding: 14px; box-shadow: 0 3px 0 #f0d78a, 0 8px 16px rgba(0,0,0,.05); background-image: linear-gradient(#fffdf5, #fff8e1); }
@@ -457,29 +461,31 @@ function route() {
   const m = location.hash.match(/^#section-(\d+)$/);
   const i = m ? +m[1] - 1 : -1;
   choosing = false; chosen = [];
-  const song = location.hash === '#song', today = location.hash === '#today';
-  if (today) renderToday(); else if (song) renderSong(); else if (SECTIONS[i]) renderSection(i); else renderHome();
-  $('backBtn').classList.toggle('hidden', !song && !today && !SECTIONS[i]);
+  const song = location.hash === '#song', today = location.hash === '#today', hub = location.hash === '#seerah-song';
+  if (today) renderToday(); else if (song) renderSong(); else if (SECTIONS[i]) renderSection(i); else if (hub) renderSongHub(); else renderHome();
+  $('backBtn').classList.toggle('hidden', !song && !today && !hub && !SECTIONS[i]);
+  playerVis();
   window.scrollTo(0, 0);
 }
 
+// Front page: a card for each part of the app. Add new links here.
 function renderHome() {
   const app = $('app');
-  app.style.removeProperty('--c');
-  app.style.removeProperty('--on');
-  app.style.removeProperty('--shade');
+  ['--c', '--on', '--shade'].forEach(p => app.style.removeProperty(p));
+  const total = ALL_LINES.length, got = ALL_LINES.filter(k => learnt.has(k)).length, s = streak();
   app.innerHTML = `
     <div class="hero">
-      <div class="eyebrow">The life of the Prophet ﷺ, in song</div>
-      <h1>Learn the Seerah<span>through the Seerah Song by Zain Bikha</span></h1>
-      <p>Listen to each line, repeat it as many times as you like, and put the sections together until you know the whole poem by heart.</p>
-      <div class="heroBtns"><button class="big" id="playSong">Play the whole song</button></div>
+      <div class="eyebrow">The life of the Prophet ﷺ</div>
+      <h1>Learn the Seerah<span>Learn about the life of the Prophet ﷺ through song and books</span></h1>
     </div>
-    ${todayCard()}
-    <div class="label">Repeat with me!</div>
-    <div class="choruses" id="choruses"></div>
-    <div class="label">Sections</div>
-    <div class="sections" id="sections"></div>
+    <div class="label">Learn</div>
+    <a class="readCard menuCard" href="#seerah-song">
+      <span class="readIcon">🎵</span>
+      <span><span class="t">The Seerah Song</span>
+      <span class="n">by Zain Bikha · learn it line by line</span>
+      <span class="n dl">⭐ ${got} of ${total} lines learnt${s ? ` · 🔥 ${s}-day streak` : ''}</span></span>
+      <span class="readGo">→</span>
+    </a>
     <div class="label">Read more</div>
     <a class="readCard" href="https://www.kalamullah.com/Books/When%20The%20Moon%20Split.pdf" target="_blank" rel="noopener">
       <span class="readIcon">📖</span>
@@ -495,6 +501,26 @@ function renderHome() {
       <span class="n dl">Click here to download the book (PDF)</span></span>
       <span class="readGo">↗</span>
     </a>`;
+}
+
+// The Seerah Song: today's practice, choruses, sections and the whole song
+function renderSongHub() {
+  const app = $('app');
+  app.style.removeProperty('--c');
+  app.style.removeProperty('--on');
+  app.style.removeProperty('--shade');
+  app.innerHTML = `
+    <div class="hero">
+      <div class="eyebrow">The life of the Prophet ﷺ, in song</div>
+      <h1>Learn the Seerah<span>through the Seerah Song by Zain Bikha</span></h1>
+      <p>Listen to each line, repeat it as many times as you like, and put the sections together until you know the whole poem by heart.</p>
+      <div class="heroBtns"><button class="big" id="playSong">Play the whole song</button></div>
+    </div>
+    ${todayCard()}
+    <div class="label">Repeat with me!</div>
+    <div class="choruses" id="choruses"></div>
+    <div class="label">Sections</div>
+    <div class="sections" id="sections"></div>`;
   CHORUSES.forEach(c => $('choruses').append(lineCard(c.key, true)));
   SECTIONS.forEach((s, i) => {
     const a = document.createElement('a');
@@ -593,6 +619,7 @@ function refresh() {
   if (location.hash === '#today') renderToday();
   else if (i >= 0) renderSection(i);
   else if (location.hash === '#song') renderSong();
+  else if (location.hash === '#seerah-song') renderSongHub();
   else renderHome();
   scrollTo(0, y);
 }
@@ -774,7 +801,7 @@ audio.addEventListener('ended', () => {
   loops++;
   // Listening all the way through a revision list ticks that task off for today
   const task = Object.keys(TASK).find(k => TASK[k] === listName && k !== 'new');
-  if (task && !(log[dayStr()] || {})[task]) { markTask(task); if (location.hash === '#today' || !location.hash) refresh(); }
+  if (task && !(log[dayStr()] || {})[task]) { markTask(task); if (location.hash === '#today' || location.hash === '#seerah-song' || !location.hash) refresh(); }
   if (repeat) { gapTimer = setTimeout(() => { gapTimer = null; pos = 0; start(); }, 1000); }
   paintPlaying();
 });
@@ -818,13 +845,19 @@ $('stop').onclick = stop;
 $('repeat').onclick = () => { repeat = !repeat; $('repeat').classList.toggle('on', repeat); };
 $('slow').onclick = () => { slow = !slow; audio.playbackRate = slow ? 0.75 : 1; $('slow').classList.toggle('on', slow); };
 
-// Back: return to the previous page in the app, or home if this page was opened directly
+// The player bar is hidden on the front page, unless something is playing.
+function playerVis() { document.body.classList.toggle('quiet', !location.hash && audio.paused); }
+audio.addEventListener('play', playerVis);
+audio.addEventListener('pause', playerVis);
+
+// Back: return to the previous page in the app. If this page was opened directly, go up one level:
+// a section, today's practice or the whole song go to the Seerah Song page, and that goes to the front page.
 const visited = [location.hash];
 window.addEventListener('hashchange', () => {
   if (visited.length > 1 && visited[visited.length - 2] === location.hash) visited.pop(); else visited.push(location.hash);
   route();
 });
-$('backBtn').onclick = () => { if (visited.length > 1) history.back(); else location.hash = ''; };
+$('backBtn').onclick = () => { if (visited.length > 1) history.back(); else location.hash = location.hash === '#seerah-song' ? '' : '#seerah-song'; };
 route();
 </script>
 </body>
