@@ -75,7 +75,6 @@ svg{display:block;touch-action:pan-x pan-y;user-select:none;-webkit-user-select:
 .ln{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .c-teal{stroke:var(--teal)} .c-brown{stroke:var(--brown)} .c-orange{stroke:var(--orange)} .c-green{stroke:var(--green)}
 .gold{stroke:var(--gold)}
-.thread-core{stroke:#fff8dc}
 .bg-teal{background:var(--teal)} .bg-brown{background:var(--brown)} .bg-orange{background:var(--orange)} .bg-green{background:var(--green)}
 svg.has-sel .ln:not(.sel){opacity:.28}
 .hit{fill:none;stroke:transparent;stroke-width:26;cursor:pointer}
@@ -370,6 +369,18 @@ body.story-open{overflow:hidden}
     }
     return d;
   }
+  /* a gold thread wound loosely around the Prophet's green line: the back turns are drawn behind the line, the front turns in front */
+  function helix(p,a,b,front){
+    var half=60, d='', s=0;
+    for(var y=a+half/2;y<b-half/2;y+=half,s++){
+      if((s%2===0)!==front){continue}
+      for(var k=0;k<=16;k++){
+        var th=Math.PI*((s%2===0)?k/16:1+k/16), yy=Math.min(b,y+half*k/16);
+        d+=(k?'L':'M')+(p.x+wobAt(p.i,Math.round((yy-a)/34))+9*Math.cos(th)).toFixed(1)+' '+yy.toFixed(1);
+      }
+    }
+    return d;
+  }
   /* soft fade where a start or end is only an estimate */
   function fade(g,p,w,x,base,dir){
     for(var k=0;k<6;k++){
@@ -415,12 +426,12 @@ body.story-open{overflow:hidden}
     var d=pathFor(p,Y(p.born),Y(p.died));
     var w=p.prophet?12:((p.ten||p.wife)?9:4.5);
     [L.gFut,L.gPast].forEach(function(g){
-      if(p.prophet){el('path',{class:'ln gold','data-id':p.id,'stroke-width':24,opacity:'0.2',d:d},g)}
-      el('path',{class:'ln c-'+p.g,'data-id':p.id,'stroke-width':w,d:d},g);
       if(p.prophet){
-        el('path',{class:'ln gold','data-id':p.id,'stroke-width':3.4,d:d},g);
-        el('path',{class:'ln thread-core','data-id':p.id,'stroke-width':1.2,d:d},g);
+        el('path',{class:'ln gold','data-id':p.id,'stroke-width':24,opacity:'0.2',d:d},g);
+        el('path',{class:'ln gold','data-id':p.id,'stroke-width':2.8,opacity:'0.75',d:helix(p,Y(p.born),Y(p.died),false)},g);
       }
+      el('path',{class:'ln c-'+p.g,'data-id':p.id,'stroke-width':w,d:d},g);
+      if(p.prophet){el('path',{class:'ln gold','data-id':p.id,'stroke-width':2.8,d:helix(p,Y(p.born),Y(p.died),true)},g)}
       fade(g,p,w,p.x+wobAt(p.i,0),Y(p.born),-1);
       if(p.dApprox){
         fade(g,p,w,p.x+wobAt(p.i,nSeg(Y(p.born),Y(p.died))),Y(p.died),1);
