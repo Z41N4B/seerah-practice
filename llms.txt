@@ -1,17 +1,25 @@
 # Learn the Seerah
 
-> Learn the Seerah is a free, browser-based app for learning the life of the Prophet Muhammad, peace be upon him, through the Seerah Song by Zain Bikha. Made by Ummah Apps. URL: https://seerah.ummahapps.ai/
+> Learn the Seerah is a free, browser-based app for learning the life of the Prophet Muhammad, peace be upon him, and his Companions: through the Seerah Song by Zain Bikha, a Sahaba timeline with stories of the Companions, an Arabic Seerah poem and Seerah books. Made by Ummah Apps. URL: https://seerah.ummahapps.ai/
 
 ## What it does
 
-- The front page has a card for each part of the app: The Seerah Song (with the lines learnt and the streak); an Arabic Seerah poem, Manzumat al-Munirah fi Muhimm 'Ilm as-Sirah (مَنْظُومَةُ الْمُنِيرَةِ فِي مُهِمِّ عِلْمِ السِّيرَةِ), a short poem by Shaykh Dr Salih al-Usaymi, as a YouTube playlist; and books to read more: When the Moon Split (the full story of the Seerah) and Shama’il at-Tirmidhi (the Prophet’s character and appearance, peace be upon him), as PDF downloads.
+- The front page has a card for each part of the app: The Seerah Song (with the lines learnt and the streak); an Arabic Seerah poem, Manzumat al-Munirah fi Muhimm 'Ilm as-Sirah (مَنْظُومَةُ الْمُنِيرَةِ فِي مُهِمِّ عِلْمِ السِّيرَةِ), a short poem by Shaykh Dr Salih al-Usaymi, as a YouTube playlist; the Sahaba Timeline; and books to read more: When the Moon Split (the full story of the Seerah) and Shama’il at-Tirmidhi (the Prophet’s character and appearance, peace be upon him), as PDF downloads.
 - The Seerah Song page has today’s practice, the choruses to repeat, the 10 sections and the whole song.
 - Plays the song line by line, section by section, or as a whole.
 - Repeat a line as many times as you like, or slow it down.
 - Follow the lyrics and star each line you learn. Stars are saved in the browser on your device.
 - Free, with no sign-up.
 
+## Sahaba Timeline
+
+- At https://seerah.ummahapps.ai/sahaba/
+- The lives of the Companions of the Prophet, peace be upon him, side by side on one timeline, in the order they became Muslim. A slider moves through time and shows who was alive at each event (the Hijra, Badr, Uhud, the Trench, Hudaybiyyah, the conquest of Makkah, Yarmouk, Qadisiyyah and more) and how old they were.
+- Tap a Companion to read their story from the book صور من حياة الصحابة (Images from the Lives of the Companions), with a "Little ones" version for children and a "Grown-ups" version, a word to learn in each scene, lessons, a short quiz and a put-it-in-order game. Mu'adh ibn Jabal's story is the first.
+- Dates are approximate.
+
 ## Links
 
 - App: https://seerah.ummahapps.ai/
+- Sahaba Timeline: https://seerah.ummahapps.ai/sahaba/
 - Publisher: https://ummahapps.ai/
