@@ -73,10 +73,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--ink);outline-of
 .scroller{flex:1 1 auto;min-width:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
 svg{display:block;touch-action:pan-x pan-y;user-select:none;-webkit-user-select:none}
 .ln{fill:none;stroke-linecap:round;stroke-linejoin:round}
-.c-teal{stroke:var(--teal)} .c-brown{stroke:var(--brown)} .c-orange{stroke:var(--orange)} .c-green{stroke:var(--green)} .c-gold{stroke:var(--gold)}
+.c-teal{stroke:var(--teal)} .c-brown{stroke:var(--brown)} .c-orange{stroke:var(--orange)} .c-green{stroke:var(--green)}
 .gold{stroke:var(--gold)}
-.beam-core{stroke:#fff8dc}
-.bg-teal{background:var(--teal)} .bg-brown{background:var(--brown)} .bg-orange{background:var(--orange)} .bg-green{background:var(--green)} .bg-gold{background:var(--gold);box-shadow:0 0 6px 2px rgba(217,165,33,.45)}
+.thread-core{stroke:#fff8dc}
+.bg-teal{background:var(--teal)} .bg-brown{background:var(--brown)} .bg-orange{background:var(--orange)} .bg-green{background:var(--green)}
 svg.has-sel .ln:not(.sel){opacity:.28}
 .hit{fill:none;stroke:transparent;stroke-width:26;cursor:pointer}
 .life{outline:none}
@@ -231,7 +231,7 @@ body.story-open{overflow:hidden}
     teal:{label:'Teachers & scholars',w:5},
     brown:{label:'Commanders & fighters',w:5},
     orange:{label:'Givers & the steadfast',w:5},
-    gold:{label:'The Prophet ﷺ',w:12}
+    green:{label:'The Prophet ﷺ',w:12}
   };
   var EVENTS=[
     {v:-12,n:'Revelation begins',s:'Revelation'},
@@ -256,7 +256,7 @@ body.story-open{overflow:hidden}
   ];
   /* born/died are years from the Hijra. SAMPLE values, approximate, to be verified. lab = full name shown above the line. */
   var PEOPLE=[
-    {id:'prophet',en:'The Prophet Muhammad ﷺ',lab:'Muhammad ibn Abdullah ﷺ',ar:'محمد بن عبد الله ﷺ',born:-53,died:11,g:'gold',prophet:true,page:null},
+    {id:'prophet',en:'The Prophet Muhammad ﷺ',lab:'Muhammad ibn Abdullah ﷺ',ar:'محمد بن عبد الله ﷺ',born:-53,died:11,g:'green',prophet:true,page:null},
     {id:'zayd-h',en:'Zayd ibn Haritha',lab:'Zayd ibn Haritha',ar:'زيد بن حارثة',born:-47,died:8,g:'brown',page:214},
     {id:'abdurrahman',en:'Abd al-Rahman ibn Awf',lab:'Abd al-Rahman ibn Awf',ar:'عبد الرحمن بن عوف',born:-43,died:32,g:'orange',page:254},
     {id:'abu-ubayda',en:'Abu Ubayda ibn al-Jarrah',lab:'Abu Ubayda, Amir ibn Abdullah ibn al-Jarrah',ar:'أبو عبيدة بن الجراح',born:-40,died:18,g:'brown',page:90},
@@ -415,21 +415,19 @@ body.story-open{overflow:hidden}
     var d=pathFor(p,Y(p.born),Y(p.died));
     var w=p.prophet?12:((p.ten||p.wife)?9:4.5);
     [L.gFut,L.gPast].forEach(function(g){
+      if(p.prophet){el('path',{class:'ln gold','data-id':p.id,'stroke-width':24,opacity:'0.2',d:d},g)}
+      el('path',{class:'ln c-'+p.g,'data-id':p.id,'stroke-width':w,d:d},g);
       if(p.prophet){
-        var beam='M'+p.x+' '+Y(p.born)+'L'+p.x+' '+Y(p.died);
-        el('path',{class:'ln gold','data-id':p.id,'stroke-width':22,opacity:'0.18',d:beam},g);
-        el('path',{class:'ln gold','data-id':p.id,'stroke-width':11,opacity:'0.5',d:beam},g);
-        el('path',{class:'ln beam-core','data-id':p.id,'stroke-width':3.5,d:beam},g);
-      }else{
-        el('path',{class:'ln c-'+p.g,'data-id':p.id,'stroke-width':w,d:d},g);
+        el('path',{class:'ln gold','data-id':p.id,'stroke-width':3.4,d:d},g);
+        el('path',{class:'ln thread-core','data-id':p.id,'stroke-width':1.2,d:d},g);
       }
-      fade(g,p,w,p.prophet?p.x:p.x+wobAt(p.i,0),Y(p.born),-1);
+      fade(g,p,w,p.x+wobAt(p.i,0),Y(p.born),-1);
       if(p.dApprox){
         fade(g,p,w,p.x+wobAt(p.i,nSeg(Y(p.born),Y(p.died))),Y(p.died),1);
       }
     });
     var g=el('g',{class:'life',tabindex:'0',role:'button','aria-label':p.lab+', born about '+label(p.born)+', died '+label(p.died)+'. Open story.','data-id':p.id},L.gHit);
-    el('path',{class:'hit',d:p.prophet?'M'+p.x+' '+Y(p.born)+'L'+p.x+' '+Y(p.died):d},g);
+    el('path',{class:'hit',d:d},g);
     var nt=el('text',{class:'nlabel',transform:'translate('+(p.x-3.2)+' '+(Y(p.died)+(p.dApprox?28:10))+') rotate(90)'},L.gNames);
     nt.textContent=p.lab;
   });
