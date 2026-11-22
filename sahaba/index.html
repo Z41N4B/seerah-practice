@@ -1652,7 +1652,7 @@ body.story-open{overflow:hidden}
     lvlButtons();
     if(pg.t==='cover'){
       h+='<div class="art">'+ART[d.cover.art||'cover']()+'</div><h2 class="sh">'+d.name+'</h2><div class="ar big" lang="ar" dir="rtl">'+d.ar+' <span class="rad">'+(d.rad||'رضي الله عنه')+'</span></div>';
-      h+=listenBtn()+withQuotes(d.cover[ST.level],d.cover.quotes);
+      h+=withQuotes(d.cover[ST.level],d.cover.quotes);
       h+='<div class="pills">'+d.cover.facts.map(function(f){return '<span class="pill">'+f+'</span>'}).join('')+'</div>';h+=d.tnote?'<p class="tnote">'+d.tnote+'</p>':'<p class="tnote">Retold from pages '+(d.pages||'497–505')+' of the book. This is an abridged retelling, not a translation. Quotations are translated word for word as closely as English allows, read from scanned pages, so a fluent reader should double-check them.</p>';
       ST.speak=d.name+'. '+speechOf(d.cover[ST.level],d.cover.quotes);
     }else if(pg.t==='scene'){
@@ -1660,7 +1660,7 @@ body.story-open{overflow:hidden}
       h+='<div class="art">'+ART[s.art]()+'</div>';
       h+='<div class="pills"><span class="pill">'+s.when+'</span><span class="pill">Aged about '+Math.round(s.v-d.born)+'</span><span class="pill">Book p. '+s.pg+'</span>'+(s.from?'<span class="pill">From '+s.fname+'\'s story</span>':'')+'</div>';
       h+='<h2 class="sh">'+s.title+'</h2>';
-      h+=listenBtn()+withQuotes(s[ST.level],s.quotes);
+      h+=withQuotes(s[ST.level],s.quotes);
       h+='<div class="box"><b>Word to learn</b><strong>'+s.word[0]+'.</strong> '+s.word[1]+'</div>';
       h+=miniBar(d,pg.i);
       if(s.from){h+='<button class="tl" type="button" data-act="from" data-id="'+s.from+'" data-i="'+s.fi+'">Read '+STORY[s.from].short+'\'s whole story</button> '}
