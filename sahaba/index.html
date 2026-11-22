@@ -1565,6 +1565,12 @@ body.story-open{overflow:hidden}
       window.speechSynthesis.speak(u);
     }catch(e){}
   }
+  function listenBtn(){return CAN_SPEAK?'<button class="listen" type="button" data-act="listen">Listen to this</button>':''}
+  /* The words to read aloud: the story text, with each quote's English read where its box sits. */
+  function speechOf(text,quotes){
+    var qs=quotes||[], i=0;
+    return String(text).replace(/\{q\}/g,function(){var q=qs[i++];return q?' “'+q.en.replace(/<[^>]*>/g,'')+'” ':' '}).replace(/\s+/g,' ').trim();
+  }
   function stopSpeak(){try{if(CAN_SPEAK){window.speechSynthesis.cancel()}}catch(e){}}
 
   function openStory(id,page){
@@ -1611,19 +1617,19 @@ body.story-open{overflow:hidden}
     lvlButtons();
     if(pg.t==='cover'){
       h+='<div class="art">'+ART[d.cover.art||'cover']()+'</div><h2 class="sh">'+d.name+'</h2><div class="ar big" lang="ar" dir="rtl">'+d.ar+' <span class="rad">'+(d.rad||'رضي الله عنه')+'</span></div>';
-      h+=withQuotes(d.cover[ST.level],d.cover.quotes);
+      h+=listenBtn()+withQuotes(d.cover[ST.level],d.cover.quotes);
       h+='<div class="pills">'+d.cover.facts.map(function(f){return '<span class="pill">'+f+'</span>'}).join('')+'</div>';h+='<p class="tnote">Retold from pages '+(d.pages||'497–505')+' of the book. This is an abridged retelling, not a translation. Quotations are translated word for word as closely as English allows, read from scanned pages, so a fluent reader should double-check them.</p>';
-      ST.speak=d.name+'. '+d.cover[ST.level];
+      ST.speak=d.name+'. '+speechOf(d.cover[ST.level],d.cover.quotes);
     }else if(pg.t==='scene'){
       var s=d.scenes[pg.i];
       h+='<div class="art">'+ART[s.art]()+'</div>';
       h+='<div class="pills"><span class="pill">'+s.when+'</span><span class="pill">Aged about '+Math.round(s.v-d.born)+'</span><span class="pill">Book p. '+s.pg+'</span></div>';
       h+='<h2 class="sh">'+s.title+'</h2>';
-      h+=withQuotes(s[ST.level],s.quotes);
+      h+=listenBtn()+withQuotes(s[ST.level],s.quotes);
       h+='<div class="box"><b>Word to learn</b><strong>'+s.word[0]+'.</strong> '+s.word[1]+'</div>';
       h+=miniBar(d,pg.i);
       h+='<button class="tl" type="button" data-act="timeline" data-v="'+s.v+'">See this year on the big timeline</button>';
-      ST.speak=s.title+'. '+s[ST.level];
+      ST.speak=s.title+'. '+speechOf(s[ST.level],s.quotes);
     }else if(pg.t==='lessons'){
       h+='<h2 class="sh">What can we learn from '+d.short+'?</h2><p class="stext">Things to talk about together.</p>';
       d.lessons.forEach(function(l){h+='<div class="lesson"><h3>'+l.t+'</h3><p>'+l.d+'</p></div>'});
