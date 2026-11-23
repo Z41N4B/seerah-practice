@@ -142,6 +142,7 @@ body.story-open{overflow:hidden}
 .sh{font-family:var(--font-display);font-weight:700;font-size:1.5rem;line-height:1.15;margin:12px 0 4px;text-wrap:balance}
 .big{font-size:1.9rem;line-height:1.3}
 .rad{font-size:1rem;color:var(--ink-soft)}
+.ph{font-size:1.15rem;margin:22px 0 4px;padding-top:14px;border-top:1px dashed var(--rule)}
 .stext{font-size:1.05rem;line-height:1.65;max-width:60ch;margin:8px 0}
 .story.kid .stext{font-size:1.25rem;line-height:1.7}
 .qh{margin:16px 0 0;font-weight:800;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
@@ -1807,12 +1808,29 @@ body.story-open{overflow:hidden}
       c.from=k[0]; c.fi=k[1]; c.fname=d.name.replace(/ \(.*\)$/,''); c.n=n; sc.push(c);
     });
     sc.sort(function(a,b){return a.v-b.v||a.n-b.n});
+    var nScenes=sc.length, nFrom=Object.keys(sc.reduce(function(o,c){o[c.from]=1;return o},{})).length;
+    /* Scenes next to each other from the same Companion's story are one page here, so the line has fewer pages.
+       Each scene keeps its own title and text on that page. Only the Prophet's line does this. */
+    var grouped=[];
+    sc.forEach(function(c){
+      var last=grouped[grouped.length-1];
+      if(last&&last.from===c.from){last.parts.push(c)}
+      else{grouped.push({from:c.from,fi:c.fi,fname:c.fname,v:c.v,when:c.when,art:c.art,parts:[c]})}
+    });
+    grouped.forEach(function(g){
+      var a=g.parts[0], z=g.parts[g.parts.length-1];
+      g.title=g.parts.map(function(p){return p.title}).join(' · ');
+      var nums=[];g.parts.forEach(function(p){String(p.pg).split('–').forEach(function(x){nums.push(Number(x))})});
+      var lo=Math.min.apply(null,nums), hi=Math.max.apply(null,nums); g.pg=lo===hi?String(lo):lo+'–'+hi;
+      if(g.parts.length===1){for(var k in a){if(!(k in g)){g[k]=a[k]}}g.parts=null}
+    });
+    sc=grouped;
     STORY.prophet={short:'the Prophet ﷺ',name:'The Prophet Muhammad ﷺ',ar:'مُحَمَّدُ بْنُ عَبْدِ اللَّهِ',rad:'صلى الله عليه وسلم',born:-53,died:11,
       tnote:'Each scene is taken from one Companion\'s story in this timeline, retold from the book صور من حياة الصحابة. Tap the button under a scene to read that Companion\'s whole story.',
       cover:{art:'pr_cover',
         kid:'This is the story of the Prophet ﷺ, told through the Companions who were with him. In each scene you meet one of them: a boy who looked after sheep, a young archer, a mother waiting for news, a soldier holding a banner. Put together, their stories follow the life of the Prophet ﷺ from Makkah to Madinah. Come and follow it, one scene at a time.',
         adult:'These are the scenes from the Companions\' stories in which they are with the Prophet ﷺ, set in time order. Together they tell the Seerah through the people who lived it beside him: in Makkah before and after the revelation, on the Hijra, and in Madinah up to his last years. Each scene is retold from that Companion\'s chapter of the book, and its dates are worked out the same way. The scenes only cover what the chapters added so far tell, so there are gaps, and some years have several scenes.',
-        facts:[sc.length+' scenes','From '+Object.keys(sc.reduce(function(o,c){o[c.from]=1;return o},{})).length+' Companions\' stories','In time order'],quotes:[]},
+        facts:[nScenes+' scenes','From '+nFrom+' Companions\' stories','In time order'],quotes:[]},
       scenes:sc};
   })();
   var storyEl=document.getElementById('story'), sBody=document.getElementById('sbody'), sDots=document.getElementById('sdots');
@@ -1889,9 +1907,17 @@ body.story-open{overflow:hidden}
       var s=d.scenes[pg.i];
       h+='<div class="art">'+ART[s.art]()+'</div>';
       h+='<div class="pills"><span class="pill">'+s.when+'</span>'+(d.noAge?'':'<span class="pill">Aged about '+Math.round(s.v-d.born)+'</span>')+'<span class="pill">Book p. '+s.pg+'</span>'+(s.from?'<span class="pill">From '+s.fname+'\'s story</span>':'')+'</div>';
+      if(s.parts){
+        s.parts.forEach(function(x,k){
+          h+=(k?'<h3 class="ph">':'<h2 class="sh">')+x.title+(k?'</h3>':'</h2>')+(k?'<div class="pills"><span class="pill">'+x.when+'</span></div>':'');
+          h+=withQuotes(x[ST.level],x.quotes);
+        });
+        h+='<div class="box"><b>Words to learn</b>'+s.parts.map(function(x){return '<strong>'+x.word[0]+'.</strong> '+x.word[1]}).join('<br>')+'</div>';
+      }else{
       h+='<h2 class="sh">'+s.title+'</h2>';
       h+=withQuotes(s[ST.level],s.quotes);
       h+='<div class="box"><b>Word to learn</b><strong>'+s.word[0]+'.</strong> '+s.word[1]+'</div>';
+      }
       h+=miniBar(d,pg.i);
       if(s.from){h+='<button class="tl" type="button" data-act="from" data-id="'+s.from+'" data-i="'+s.fi+'">Read '+STORY[s.from].short+'\'s whole story</button> '}
       h+='<button class="tl" type="button" data-act="timeline" data-v="'+s.v+'">See this year on the big timeline</button>';
