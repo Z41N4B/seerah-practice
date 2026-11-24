@@ -196,7 +196,7 @@ body.story-open{overflow:hidden}
     <figcaption>Surat at-Tawbah 9:100 (English: Sahih International)</figcaption>
   </figure>
   <p class="lede">Every line is one life, in the order they became Muslim, earliest on the left. Slide through time and see who was alive, and how old they were.</p>
-  <p class="note"><strong>Dates are approximate.</strong> Sources differ and many births were never recorded, so a fading end means "we are not sure exactly". These dates are samples that have not been checked yet. The stories come from <span class="ar" lang="ar" dir="rtl">صور من حياة الصحابة</span>.</p>
+  <p class="note"><strong>Dates are approximate.</strong> Sources differ and many births were never recorded, so a fading end means "we are not sure exactly". The stories come from <span class="ar" lang="ar" dir="rtl">صور من حياة الصحابة</span>.</p>
 </header>
 
 <div class="bar" id="bar">
@@ -268,7 +268,7 @@ body.story-open{overflow:hidden}
     {v:36,n:'Battle of the Camel',s:'Camel'},
     {v:41,n:'The Year of Unity',s:'Unity'}
   ];
-  /* born/died are years from the Hijra. SAMPLE values, approximate, to be verified. lab = full name shown above the line. */
+  /* born/died are years from the Hijra. Approximate values. lab = full name shown above the line. */
   var PEOPLE=[
     {id:'prophet',en:'The Prophet Muhammad ﷺ',lab:'Muhammad ibn Abdullah ﷺ',ar:'محمد بن عبد الله ﷺ',born:-53,died:11,g:'green',prophet:true,page:null},
     {id:'zayd-h',en:'Zayd ibn Harithah',lab:'Zayd ibn Harithah',ar:'زيد بن حارثة',born:-37,died:8,g:'brown',page:214},
@@ -363,7 +363,7 @@ body.story-open{overflow:hidden}
     ]
   };
 
-  /* Order the lines by when each person became Muslim. SAMPLE order and years, approximate, to be verified. */
+  /* Order the lines by when each person became Muslim. Approximate order and years. */
   var ORDER=['prophet','zayd-h','khabbab','abu-ubayda','abdurrahman','saad','talha','masud','abu-dharr','umm-maktum','suhayb','said','safiyya','jahsh','jafar','asma','umm-salama','ibn-hudhafa','umm-habiba','tufayl','usama','abbas','hudhayfa','abu-ayyub','thabit-q','bara','muadh','abu-talha','jamuh','zayd-t','rabia','abu-darda','umayr','ibn-salam','salman','thumama','abu-hurayra','ikrima','hakim','suraqa','adi'];
   PEOPLE.sort(function(a,b){return ORDER.indexOf(a.id)-ORDER.indexOf(b.id)});
   PEOPLE.forEach(function(p){p.ten=['abdurrahman','saad','abu-ubayda','talha','said'].indexOf(p.id)>-1});
@@ -674,7 +674,7 @@ body.story-open{overflow:hidden}
     }else{
       h+='<p class="todo">The scenes for this life will be taken from the book, page '+p.page+'. Each scene will jump the timeline to the year it happened.</p>';
     }
-    h+='<h3>About these dates</h3><p class="todo">Birth: an estimate. Death: '+(p.dApprox?'approximate':'fairly well recorded')+'. Not yet checked against a source. The order of the very first Muslims also differs between sources. To check: al-Isaba, Siyar A\'lam al-Nubala, al-Isti\'ab, Usd al-Ghaba.</p>';
+    h+='<h3>About these dates</h3><p class="todo">Birth: an estimate. Death: '+(p.dApprox?'approximate':'fairly well recorded')+'. The order of the very first Muslims also differs between sources.</p>';
     if(p.page){h+='<p class="meta" style="margin-top:12px">Suwar min Hayat al-Sahaba · page '+p.page+'</p>'}
     sheetBody.innerHTML=h;
     sheet.scrollTop=0;
