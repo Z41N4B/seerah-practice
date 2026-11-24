@@ -19,7 +19,7 @@
 /* Layout: one tall sheet of paper that also pans sideways. Time runs down it, every life is a marker line, and a reading line slides through time showing who was alive and how old they were. The year ruler and the Prophet's line stay fixed at the left, and a row of full names stays pinned at the top while scrolling. */
 :root{
   --paper:#f7f2e9; --paper-2:#eee5d3; --ink:#2b2620; --ink-soft:#6d6355; --rule:#ddd2c0; --sheet:#fffaf1;
-  --orange:#e8922a; --brown:#8b5a30; --teal:#1d9a93; --green:#2f8f57; --gold:#d9a521; --purple:#8a6f9e;
+  --orange:#e8922a; --brown:#8b5a30; --teal:#1d9a93; --green:#2f8f57; --gold:#d9a521; --purple:#8a6f9e; --navy:#1f3f7a;
   --font-display:'Baloo 2','Trebuchet MS',sans-serif;
   --font-body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
   --font-ar:'Amiri','Traditional Arabic','Geeza Pro',serif;
@@ -27,12 +27,12 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --paper:#1c1814; --paper-2:#2a241d; --ink:#efe6d6; --ink-soft:#a99c89; --rule:#3a3229; --sheet:#26211b;
-    --orange:#f2a549; --brown:#c28c5a; --teal:#3dbdb5; --green:#46b574; --gold:#f0c040; --purple:#b49ac6; color-scheme:dark;
+    --orange:#f2a549; --brown:#c28c5a; --teal:#3dbdb5; --green:#46b574; --gold:#f0c040; --purple:#b49ac6; --navy:#3f66b0; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --paper:#1c1814; --paper-2:#2a241d; --ink:#efe6d6; --ink-soft:#a99c89; --rule:#3a3229; --sheet:#26211b;
-  --orange:#f2a549; --brown:#c28c5a; --teal:#3dbdb5; --green:#46b574; --gold:#f0c040; --purple:#b49ac6; color-scheme:dark;
+  --orange:#f2a549; --brown:#c28c5a; --teal:#3dbdb5; --green:#46b574; --gold:#f0c040; --purple:#b49ac6; --navy:#3f66b0; color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.5;padding-block:8px 48px}
@@ -79,6 +79,12 @@ svg{display:block;touch-action:pan-x pan-y;user-select:none;-webkit-user-select:
 .ln{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .c-teal{stroke:var(--teal)} .c-brown{stroke:var(--brown)} .c-orange{stroke:var(--orange)} .c-green{stroke:var(--green)} .c-purple{stroke:var(--purple)}
 .gold{stroke:var(--gold)}
+html.pblue .ln.c-green[data-id="prophet"],html.pblue .dotc[data-id="prophet"]{stroke:var(--navy)}
+.heartbtn{position:fixed;left:calc(10px + env(safe-area-inset-left,0px));bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:45;width:30px;height:30px;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;display:grid;place-items:center;opacity:.75}
+.heartbtn:hover,.heartbtn:focus-visible{opacity:1}
+.heartbtn svg{width:14px;height:14px;display:block}
+.heartbtn path{fill:none;stroke:#3a78c8;stroke-width:2.4}
+.heartbtn[aria-pressed="true"] path{fill:#3a78c8}
 .bg-teal{background:var(--teal)} .bg-brown{background:var(--brown)} .bg-orange{background:var(--orange)} .bg-green{background:var(--green)} .bg-purple{background:var(--purple)}
 svg.has-sel .ln:not(.sel){opacity:.28}
 .hit{fill:none;stroke:transparent;stroke-width:26;cursor:pointer}
@@ -216,6 +222,15 @@ body.story-open{overflow:hidden}
     <div class="scroller" id="scroller"><svg id="svg" role="group" aria-label="Timeline of sixteen Companions. Time runs from top to bottom. Swipe sideways to see more."></svg></div>
   </div>
 </main>
+<button class="heartbtn" type="button" id="heartbtn" aria-pressed="false" aria-label="Make the Prophet's line dark blue" title="Make the Prophet's line dark blue"><svg viewBox="0 0 24 22" aria-hidden="true"><path d="M12 20.5 C5 15 1.5 11.5 1.5 7 A5 5 0 0 1 12 4.5 A5 5 0 0 1 22.5 7 C22.5 11.5 19 15 12 20.5Z"/></svg></button>
+<script>
+(function(){
+  var b=document.getElementById('heartbtn'),r=document.documentElement;
+  function set(on){r.classList.toggle('pblue',on);b.setAttribute('aria-pressed',on?'true':'false')}
+  try{set(localStorage.getItem('sahabaProphetBlue')==='1')}catch(e){}
+  b.addEventListener('click',function(){var on=!r.classList.contains('pblue');set(on);try{localStorage.setItem('sahabaProphetBlue',on?'1':'0')}catch(e){}});
+})();
+</script>
 
 <div class="story" id="story" role="dialog" aria-modal="true" aria-label="Story">
   <div class="story-top wrap">
@@ -683,7 +698,7 @@ body.story-open{overflow:hidden}
     PEOPLE.forEach(function(p){
       if(v>=p.born&&v<=p.died){
         alive++;
-        el('circle',{class:'dotc c-'+p.g,cx:p.x,cy:my,r:9.5},p.L.gDots);
+        el('circle',{class:'dotc c-'+p.g,'data-id':p.id,cx:p.x,cy:my,r:9.5},p.L.gDots);
         var tt=el('text',{class:'dott',x:p.x,y:my+3},p.L.gDots);
         tt.textContent='~'+Math.round(v-p.born);
       }
