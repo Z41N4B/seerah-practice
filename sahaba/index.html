@@ -452,7 +452,7 @@ body.story-open{overflow:hidden}
   };
 
   /* Order the lines by when each person became Muslim. Approximate order and years. */
-  var ORDER=['prophet','zayd-h','khabbab','abu-ubayda','abdurrahman','saad','talha','masud','abu-dharr','umm-maktum','said','safiyya','jahsh','jafar','asma','utbah','barakah','fatimah','umm-salama','ibn-hudhafa','umm-habiba','suhayb','tufayl','musab','salim','aisha','ibn-umar','usama','abbas','hudhayfa','usayd','abbad','thabit-q','maslamah','rumaysa','umayr-s','abu-ayyub','habib','bara','muadh','abu-talha','asim','jamuh','nuayman','ubayy','zayd-t','rabia','uqbah','ibn-salam','salman','julaybib','abu-darda','umayr','nuaym','numan','said-amir','thumama','abu-al-as','fayruz','abu-hurayra','abu-musa','salama-qays','ikrima','abu-sufyan-h','hakim','suraqa','suhayl','zayd-khayr','wahshi','adi','majzaa'];
+  var ORDER=['prophet','zayd-h','barakah','fatimah','abdurrahman','saad','talha','abu-ubayda','said','abu-dharr','khabbab','masud','utbah','asma','safiyya','jahsh','jafar','umm-maktum','umm-salama','ibn-hudhafa','umm-habiba','salim','musab','suhayb','tufayl','aisha','ibn-umar','usama','abbas','abbad','maslamah','usayd','thabit-q','rumaysa','hudhayfa','ubayy','nuayman','abu-ayyub','muadh','abu-talha','habib','bara','asim','umayr-s','jamuh','zayd-t','rabia','ibn-salam','salman','uqbah','julaybib','abu-darda','umayr','said-amir','numan','nuaym','thumama','abu-al-as','abu-hurayra','abu-musa','fayruz','abu-sufyan-h','hakim','suhayl','ikrima','suraqa','salama-qays','zayd-khayr','adi','wahshi','majzaa'];
   PEOPLE.sort(function(a,b){return ORDER.indexOf(a.id)-ORDER.indexOf(b.id)});
   PEOPLE.forEach(function(p){p.ten=['abdurrahman','saad','abu-ubayda','talha','said'].indexOf(p.id)>-1});
   var ISLAM={
@@ -2788,7 +2788,7 @@ body.story-open{overflow:hidden}
     ['zayd-h',8],['umm-salama',7],['umm-salama',9],['masud',4],['abbas',1],['zayd-t',3],
     ['umm-habiba',5],['umm-habiba',6],['abbas',2],['jafar',7],
     ['muadh',3],['abu-ubayda',4],['zayd-h',9],['jafar',10],['jafar',11],
-    ['abu-ubayda',5],['abdurrahman',6],['abdurrahman',7],['muadh',4],
+    ['abu-ubayda',5],['abdurrahman',6],['abdurrahman',7],
     ['salman',7],['salman',8],['abu-dharr',3],['abu-dharr',4],['abu-dharr',5],['abu-dharr',6],
     ['umm-maktum',1],['umm-maktum',2],['umm-maktum',4],['umm-maktum',5],
     ['abu-hurayra',2],['abu-hurayra',3],['abu-hurayra',4],
@@ -2829,8 +2829,8 @@ body.story-open{overflow:hidden}
     ['abu-musa',0],['abu-musa',1],['abu-musa',2],
     ['aisha',1],['aisha',2],['aisha',3],['aisha',4],['aisha',5],['aisha',6],
     ['nuayman',1],['nuayman',2],
-    ['barakah',2],['barakah',4],
-    ['fatimah',1],['fatimah',2],['fatimah',3],['fatimah',4],['fatimah',5],['fatimah',6],
+    ['barakah',0],['barakah',1],['barakah',2],['barakah',4],
+    ['fatimah',0],['fatimah',1],['fatimah',2],['fatimah',3],['fatimah',4],['fatimah',5],['fatimah',6],
     ['julaybib',1],['julaybib',2],
     ['maslamah',2],['maslamah',3],['maslamah',4],
     ['musab',2],['musab',3],['musab',4],['musab',5],
@@ -2915,7 +2915,7 @@ body.story-open{overflow:hidden}
   function miniBar(d,i){
     var span=d.died-d.born, cur=d.scenes[i], dots='';
     d.scenes.forEach(function(s,k){dots+='<i class="md'+(k===i?' on':'')+'" style="left:'+Math.max(0,Math.min(100,((s.v-d.born)/span)*100)).toFixed(1)+'%"></i>'});
-    return '<div class="mini" aria-label="Where this scene falls in his life"><div class="mtrack">'+dots+'</div><div class="mlab"><span>Born about '+label(d.born)+'</span><span><b>'+(d.noAge?'':'Aged about '+Math.round(cur.v-d.born))+'</b></span><span>Died '+label(d.died)+'</span></div></div>';
+    return '<div class="mini" aria-label="Where this scene falls in his life"><div class="mtrack">'+dots+'</div><div class="mlab"><span>Born about '+label(d.born)+'</span><span><b>'+(d.noAge||cur.v<d.born?'':'Aged about '+Math.round(cur.v-d.born))+'</b></span><span>Died '+label(d.died)+'</span></div></div>';
   }
   function qBox(q){return '<div class="quote">'+(q.ar?'<div class="ar" lang="ar" dir="rtl">'+q.ar+'</div>':'')+'<div class="qen">“'+q.en+'”</div><small>'+q.by+'</small></div>'}
   /* A {q} in the text is where the next quote goes: the text up to it, the whole quote, then the text carries on underneath.
@@ -2943,7 +2943,7 @@ body.story-open{overflow:hidden}
     }else if(pg.t==='scene'){
       var s=d.scenes[pg.i];
       h+='<div class="art">'+ART[s.art]()+'</div>';
-      h+='<div class="pills"><span class="pill">'+s.when+'</span>'+(d.noAge?'':'<span class="pill">Aged about '+Math.round(s.v-d.born)+'</span>')+(s.pg?'<span class="pill">Book p. '+s.pg+'</span>':(d.src?'<span class="pill">'+d.src+'</span>':''))+(s.from?'<span class="pill">From '+s.fname+'\'s story</span>':'')+'</div>';
+      h+='<div class="pills"><span class="pill">'+s.when+'</span>'+(d.noAge||s.v<d.born?'':'<span class="pill">Aged about '+Math.round(s.v-d.born)+'</span>')+(s.pg?'<span class="pill">Book p. '+s.pg+'</span>':(d.src?'<span class="pill">'+d.src+'</span>':''))+(s.from?'<span class="pill">From '+s.fname+'\'s story</span>':'')+'</div>';
       if(s.parts){
         s.parts.forEach(function(x,k){
           h+=(k?'<h3 class="ph">':'<h2 class="sh">')+x.title+(k?'</h3>':'</h2>')+(k?'<div class="pills"><span class="pill">'+x.when+'</span></div>':'');
