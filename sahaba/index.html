@@ -19,7 +19,7 @@
 /* Layout: one tall sheet of paper that also pans sideways. Time runs down it, every life is a marker line, and a reading line slides through time showing who was alive and how old they were. The year ruler and the Prophet's line stay fixed at the left, and a row of full names stays pinned at the top while scrolling. */
 :root{
   --paper:#f7f2e9; --paper-2:#eee5d3; --ink:#2b2620; --ink-soft:#6d6355; --rule:#ddd2c0; --sheet:#fffaf1;
-  --orange:#e8922a; --brown:#8b5a30; --teal:#1d9a93; --green:#2f8f57; --gold:#d9a521; --purple:#8a6f9e; --navy:#2f62c0;
+  --orange:#e8922a; --brown:#8b5a30; --teal:#1d9a93; --green:#2f8f57; --gold:#d9a521; --purple:#8a6f9e; --rose:#c07587; --navy:#2f62c0;
   --font-display:'Baloo 2','Trebuchet MS',sans-serif;
   --font-body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
   --font-ar:'Amiri','Traditional Arabic','Geeza Pro',serif;
@@ -27,12 +27,12 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --paper:#1c1814; --paper-2:#2a241d; --ink:#efe6d6; --ink-soft:#a99c89; --rule:#3a3229; --sheet:#26211b;
-    --orange:#f2a549; --brown:#c28c5a; --teal:#3dbdb5; --green:#46b574; --gold:#f0c040; --purple:#b49ac6; --navy:#5b8ae0; color-scheme:dark;
+    --orange:#f2a549; --brown:#c28c5a; --teal:#3dbdb5; --green:#46b574; --gold:#f0c040; --purple:#b49ac6; --rose:#dc98a8; --navy:#5b8ae0; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --paper:#1c1814; --paper-2:#2a241d; --ink:#efe6d6; --ink-soft:#a99c89; --rule:#3a3229; --sheet:#26211b;
-  --orange:#f2a549; --brown:#c28c5a; --teal:#3dbdb5; --green:#46b574; --gold:#f0c040; --purple:#b49ac6; --navy:#5b8ae0; color-scheme:dark;
+  --orange:#f2a549; --brown:#c28c5a; --teal:#3dbdb5; --green:#46b574; --gold:#f0c040; --purple:#b49ac6; --rose:#dc98a8; --navy:#5b8ae0; color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.5;padding-block:8px 48px}
@@ -88,7 +88,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--ink);outline-of
 .scroller{flex:1 1 auto;min-width:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
 svg{display:block;touch-action:pan-x pan-y;user-select:none;-webkit-user-select:none}
 .ln{fill:none;stroke-linecap:round;stroke-linejoin:round}
-.c-teal{stroke:var(--teal)} .c-brown{stroke:var(--brown)} .c-orange{stroke:var(--orange)} .c-green{stroke:var(--green)} .c-purple{stroke:var(--purple)}
+.c-teal{stroke:var(--teal)} .c-brown{stroke:var(--brown)} .c-orange{stroke:var(--orange)} .c-green{stroke:var(--green)} .c-purple{stroke:var(--purple)} .c-rose{stroke:var(--rose)}
 .gold{stroke:var(--gold)}
 html.pblue .ln.c-green[data-id="prophet"],html.pblue .dotc[data-id="prophet"]{stroke:var(--navy)}
 .heartbtn{position:fixed;left:calc(10px + env(safe-area-inset-left,0px));bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:45;width:30px;height:30px;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;display:grid;place-items:center;opacity:.75}
@@ -96,7 +96,7 @@ html.pblue .ln.c-green[data-id="prophet"],html.pblue .dotc[data-id="prophet"]{st
 .heartbtn svg{width:14px;height:14px;display:block}
 .heartbtn path{fill:none;stroke:#3a78c8;stroke-width:2.4}
 .heartbtn[aria-pressed="true"] path{fill:#3a78c8}
-.bg-teal{background:var(--teal)} .bg-brown{background:var(--brown)} .bg-orange{background:var(--orange)} .bg-green{background:var(--green)} .bg-purple{background:var(--purple)}
+.bg-teal{background:var(--teal)} .bg-brown{background:var(--brown)} .bg-orange{background:var(--orange)} .bg-green{background:var(--green)} .bg-purple{background:var(--purple)} .bg-rose{background:var(--rose)}
 svg.has-sel .ln:not(.sel){opacity:.28}
 .hit{fill:none;stroke:transparent;stroke-width:26;cursor:pointer}
 .life{outline:none}
@@ -271,7 +271,8 @@ body.story-open{overflow:hidden}
     teal:{label:'Teachers & scholars',w:5},
     brown:{label:'Commanders & fighters',w:5},
     orange:{label:'Givers & the steadfast',w:5},
-    purple:{label:'Mothers of the Believers',w:5},
+    rose:{label:'Mothers of the Believers',w:5},
+    purple:{label:"Tabi'een, the next generation",w:5},
     green:{label:'The Prophet ﷺ',w:12}
   };
   var EVENTS=[
@@ -305,9 +306,9 @@ body.story-open{overflow:hidden}
     {id:'jafar',en:"Ja'far ibn Abi Talib",lab:"Ja'far ibn Abi Talib",ar:'جعفر بن أبي طالب',born:-33,died:8,g:'brown',page:262},
     {id:'masud',en:"Abdullah ibn Mas'ud",lab:"Abdullah ibn Mas'ud",ar:'عبد الله بن مسعود',born:-30,died:32,g:'teal',page:97},
     {id:'asma',en:'Asma bint Abi Bakr',lab:'Asma bint Abi Bakr',ar:'أسماء بنت أبي بكر',born:-27,died:73,fem:true,g:'orange',page:463},
-    {id:'umm-habiba',en:'Umm Habibah (Ramlah bint Abi Sufyan)',lab:'Umm Habibah bint Abi Sufyan',ar:'رملة بنت أبي سفيان (أم حبيبة)',born:-26,died:44,fem:true,wife:true,g:'purple',page:324},
+    {id:'umm-habiba',en:'Umm Habibah (Ramlah bint Abi Sufyan)',lab:'Umm Habibah bint Abi Sufyan',ar:'رملة بنت أبي سفيان (أم حبيبة)',born:-26,died:44,fem:true,wife:true,g:'rose',page:324},
     {id:'talha',en:'Talhah ibn Ubaydullah',lab:'Talhah ibn Ubaydullah',ar:'طلحة بن عبيد الله التيمي',born:-25,died:36,g:'brown',page:471},
-    {id:'umm-salama',en:'Umm Salamah',lab:'Umm Salamah bint Abi Umayyah',ar:'أم سلمة',born:-25,died:60,dApprox:true,fem:true,wife:true,g:'purple',page:47},
+    {id:'umm-salama',en:'Umm Salamah',lab:'Umm Salamah bint Abi Umayyah',ar:'أم سلمة',born:-25,died:60,dApprox:true,fem:true,wife:true,g:'rose',page:47},
     {id:'said',en:"Sa'id ibn Zayd",lab:"Sa'id ibn Zayd",ar:'سعيد بن زيد',born:-22,died:51,dApprox:true,g:'orange',page:230},
     {id:'saad',en:"Sa'd ibn Abi Waqqas",lab:"Sa'd ibn Abi Waqqas",ar:'سعد بن أبي وقاص',born:-29,died:55,dApprox:true,g:'brown',page:285},
     {id:'abu-hurayra',en:'Abu Hurayrah',lab:'Abu Hurayrah',ar:'أبو هريرة الدوسي',born:-21,died:58,dApprox:true,g:'teal',page:479},
@@ -338,7 +339,7 @@ body.story-open{overflow:hidden}
     {id:'thabit-q',en:'Thabit ibn Qays',lab:'Thabit ibn Qays al-Ansari',ar:'ثابت بن قيس الأنصاري',born:-30,died:12,dApprox:true,g:'teal',page:456},
     {id:'said-amir',en:"Sa'id ibn Amir",lab:"Sa'id ibn Amir al-Jumahi",ar:'سعيد بن عامر الجمحي',born:-10,died:20,dApprox:true,g:'orange',page:7},
     {id:'zayd-khayr',en:'Zayd al-Khayr',lab:'Zayd al-Khayr, son of Muhalhil',ar:'زيد الخير',born:-40,died:9,dApprox:true,g:'brown',page:124},
-    {id:'majzaa',en:"Majza'ah ibn Thawr",lab:"Majza'ah ibn Thawr as-Sadusi",ar:'مجزأة بن ثور السدوسي',born:-30,died:20,dApprox:true,g:'brown',page:156},
+    {id:'majzaa',en:"Majza'ah ibn Thawr",lab:"Majza'ah ibn Thawr as-Sadusi",ar:'مجزأة بن ثور السدوسي',born:-30,died:20,dApprox:true,g:'purple',page:156},
     {id:'usayd',en:'Usayd ibn Hudayr',lab:'Usayd ibn Hudayr',ar:'أسيد بن حضير',born:-30,died:20,dApprox:true,g:'teal',page:164},
     {id:'numan',en:"al-Nu'man ibn Muqarrin",lab:"al-Nu'man ibn Muqarrin al-Muzani",ar:'النعمان بن مقرن المزني',born:-30,died:21,dApprox:true,g:'brown',page:187},
     {id:'umayr-s',en:"Umayr ibn Sa'd",lab:"Umayr ibn Sa'd al-Ansari",ar:'عمير بن سعد الأنصاري',born:-3,died:22,dApprox:true,g:'orange',page:238},
