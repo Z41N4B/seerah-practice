@@ -1,0 +1,19 @@
+{
+  "name": "Sahaba Timeline",
+  "short_name": "Sahaba",
+  "description": "The Companions of the Prophet, peace be upon him, on one timeline, with a story for each.",
+  "id": "/sahaba/",
+  "start_url": "/sahaba/",
+  "scope": "/sahaba/",
+  "display": "standalone",
+  "background_color": "#f7f2e9",
+  "theme_color": "#f7f2e9",
+  "lang": "en",
+  "categories": ["education", "books"],
+  "icons": [
+    { "src": "/sahaba/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/sahaba/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/sahaba/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
