@@ -112,6 +112,10 @@ svg.has-sel .ln:not(.sel){opacity:.28}
 .mpill{fill:var(--ink)}
 .mtext{fill:var(--paper);font:700 10px var(--font-body);text-anchor:middle}
 .dotc{fill:var(--paper);stroke-width:2}
+.mdot{fill:var(--c);stroke:var(--paper);stroke-width:1.8}
+.mdot.unsure{fill:var(--paper);stroke:var(--c);stroke-width:1.6;stroke-dasharray:2.2 1.6}
+.lgdot{display:inline-block;width:10px;height:10px;box-sizing:border-box;border-radius:50%;background:var(--ink-soft);margin:0 6px;flex:none}
+.lgdot.unsure{background:transparent;border:1.5px dashed var(--ink-soft)}
 .dott{fill:var(--ink);font:700 8px var(--font-body);text-anchor:middle}
 
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;max-height:52vh;overflow-y:auto;background:var(--sheet);border-top:1px solid var(--rule);border-radius:18px 18px 0 0;box-shadow:0 -8px 28px rgba(0,0,0,.18);padding-block:14px calc(18px + env(safe-area-inset-bottom,0px));transform:translateY(105%);visibility:hidden;transition:transform .25s ease,visibility 0s .25s}
@@ -458,6 +462,7 @@ body.story-open{overflow:hidden}
   var ORDER=['prophet','zayd-h','barakah','fatimah','abdurrahman','saad','talha','abu-ubayda','said','abu-dharr','khabbab','masud','utbah','asma','safiyya','jahsh','jafar','umm-maktum','umm-salama','ibn-hudhafa','umm-habiba','salim','musab','suhayb','tufayl','aisha','ibn-umar','usama','abbas','abbad','maslamah','usayd','thabit-q','rumaysa','hudhayfa','ubayy','nuayman','abu-ayyub','muadh','abu-talha','habib','bara','asim','umayr-s','jamuh','zayd-t','rabia','ibn-salam','salman','uqbah','julaybib','abu-darda','umayr','said-amir','numan','nuaym','thumama','abu-al-as','abu-hurayra','abu-musa','fayruz','abu-sufyan-h','hakim','suhayl','ikrima','suraqa','salama-qays','zayd-khayr','adi','wahshi','majzaa'];
   PEOPLE.sort(function(a,b){return ORDER.indexOf(a.id)-ORDER.indexOf(b.id)});
   PEOPLE.forEach(function(p){p.ten=['abdurrahman','saad','abu-ubayda','talha','said'].indexOf(p.id)>-1});
+  /* When each became Muslim. c:1 = a child at the time (no dot on the line); u:1 = the year is not sure (a faded dot). */
   var ISLAM={
     'zayd-h':{y:-12,n:'the first man to believe in him'},
     abdurrahman:{y:-12,n:'two days after Abu Bakr, before the house of al-Arqam'},
@@ -469,66 +474,66 @@ body.story-open{overflow:hidden}
     jahsh:{y:-12,n:'before the house of al-Arqam'},
     jafar:{y:-12,n:'with his wife Asma, through Abu Bakr'},
     asma:{y:-12,n:'only seventeen people before her'},
-    'umm-salama':{y:-11,n:'early, with her husband Abu Salamah'},
-    'umm-habiba':{y:-11,n:'early, in Makkah'},
-    abbas:{y:-3,n:'raised as a Muslim from birth'},
+    'umm-salama':{y:-11,n:'early, with her husband Abu Salamah',u:1},
+    'umm-habiba':{y:-11,n:'early, in Makkah',u:1},
+    abbas:{y:-3,n:'raised as a Muslim from birth',c:1},
     muadh:{y:-1,n:'in Madinah, before the Hijra'},
-    'zayd-t':{y:0,n:'as a boy in Madinah'},
+    'zayd-t':{y:0,n:'as a boy in Madinah',c:1},
     salman:{y:1,n:'in Madinah, after seeing the three signs'},
     'abu-dharr':{y:-12,n:'the fourth or the fifth, after three nights with Ali'},
     'umm-maktum':{y:-12,n:'one of the first, in Makkah'},
     hudhayfa:{y:-2,n:'raised in a Muslim home in Madinah, before he met the Prophet ﷺ'},
-    tufayl:{y:-10,n:'in Makkah, after hearing the Qur\'an at the Ka\'ba'},
+    tufayl:{y:-10,n:'in Makkah, after hearing the Qur\'an at the Ka\'ba',u:1},
     thumama:{y:6,n:'in Madinah, three days after he was set free'},
     'abu-ayyub':{y:-1,n:'in Madinah, before the Hijra'},
     ikrima:{y:8,n:'after Makkah was opened, when his wife brought him back'},
     suhayb:{y:-10,n:'with Ammar ibn Yasir, at the house of al-Arqam'},
     'abu-darda':{y:2,n:'after Badr, the last of his neighbourhood'},
-    usama:{y:-7,n:'born to Muslim parents, and raised a Muslim'},
+    usama:{y:-7,n:'born to Muslim parents, and raised a Muslim',c:1},
     khabbab:{y:-12,n:'the sixth person on earth to become Muslim'},
     'ibn-salam':{y:1,n:'as soon as the Prophet ﷺ came to Madinah'},
     suraqa:{y:8,n:"at al-Ji'ranah, showing the Prophet ﷺ the letter written for him"},
-    'ibn-hudhafa':{y:-11,n:'early, in Makkah (the book does not say when)'},
+    'ibn-hudhafa':{y:-11,n:'early, in Makkah (the book does not say when)',u:1},
     umayr:{y:2,n:'in Madinah after Badr, when the Prophet ﷺ told him his secret'},
-    bara:{y:-1,n:'in Madinah, among the Ansar (the book does not say when)'},
+    bara:{y:-1,n:'in Madinah, among the Ansar (the book does not say when)',u:1},
     jamuh:{y:-1,n:'in Madinah, after his idol was thrown into a well'},
     adi:{y:9,n:'in Madinah, after his sister came back from the Prophet ﷺ'},
     'abu-talha':{y:-1,n:'in Madinah, so he could marry Umm Sulaym'},
     hakim:{y:8,n:'on the day Makkah was opened'},
-    rabia:{y:0,n:'as a young boy (the book does not say when)'},
+    rabia:{y:0,n:'as a young boy (the book does not say when)',c:1},
     safiyya:{y:-12,n:'among the very first believers, in Makkah'},
     'thabit-q':{y:-2,n:"in Madinah, on hearing Mus'ab ibn Umayr recite the Qur'an"},
-    'said-amir':{y:5,n:'after he saw Khubayb killed (the book does not say when)'},
+    'said-amir':{y:5,n:'after he saw Khubayb killed (the book does not say when)',u:1},
     'zayd-khayr':{y:9,n:'when he came to Madinah with the delegation of Tayy'},
-    majzaa:{y:9,n:'the book does not say when, so this year is only a guess'},
+    majzaa:{y:9,n:'the book does not say when, so this year is only a guess',u:1},
     usayd:{y:-2,n:"in Madinah, through Mus'ab ibn Umayr"},
-    numan:{y:5,n:'with his ten brothers and four hundred horsemen of Muzaynah (the book does not give the year)'},
-    'umayr-s':{y:-1,n:'as a boy of about ten (the book does not give the year)'},
+    numan:{y:5,n:'with his ten brothers and four hundred horsemen of Muzaynah (the book does not give the year)',u:1},
+    'umayr-s':{y:-1,n:'as a boy of about ten (the book does not give the year)',c:1},
     'abu-sufyan-h':{y:8,n:'on the way to Makkah, just before it was opened'},
     uqbah:{y:1,n:'when the Prophet ﷺ came to Madinah'},
-    habib:{y:-1,n:'as a little boy, with his parents, at the pledge of al-Aqabah'},
+    habib:{y:-1,n:'as a little boy, with his parents, at the pledge of al-Aqabah',c:1},
     wahshi:{y:9,n:'in Madinah, after running away to al-Ta\'if'},
     abbad:{y:-2,n:"in Madinah, through Mus'ab ibn Umayr"},
-    'abu-al-as':{y:7,n:'in Makkah, after returning everyone\'s money (the book does not give the year)'},
-    asim:{y:-1,n:'in Madinah, before the Hijrah (the book does not say when)'},
+    'abu-al-as':{y:7,n:'in Makkah, after returning everyone\'s money (the book does not give the year)',u:1},
+    asim:{y:-1,n:'in Madinah, before the Hijrah (the book does not say when)',u:1},
     utbah:{y:-12,n:'the seventh of the first seven Muslims'},
     nuaym:{y:5,n:'during the Battle of the Trench'},
-    fayruz:{y:7,n:"with Badhan and the Abna' of Yemen (the book does not say when)"},
-    'salama-qays':{y:8,n:'the book does not say when'},
-    'ibn-umar':{y:-8,n:'as a young boy, with his father Umar'},
-    'abu-musa':{y:7,n:'he came from Yemen with his people at Khaybar (some reports say earlier, in Makkah)'},
-    'aisha':{y:-9,n:'born to Muslim parents, Abu Bakr and Umm Ruman'},
+    fayruz:{y:7,n:"with Badhan and the Abna' of Yemen (the book does not say when)",u:1},
+    'salama-qays':{y:8,n:'the book does not say when',u:1},
+    'ibn-umar':{y:-8,n:'as a young boy, with his father Umar',c:1},
+    'abu-musa':{y:7,n:'he came from Yemen with his people at Khaybar (some reports say earlier, in Makkah)',u:1},
+    'aisha':{y:-9,n:'born to Muslim parents, Abu Bakr and Umm Ruman',c:1},
     'nuayman':{y:-1,n:'in Madinah, before the second pledge of al-Aqabah'},
     'barakah':{y:-12,n:"among the very first, in the Prophet's ﷺ household"},
-    'fatimah':{y:-12,n:"as a young girl in her father's ﷺ home"},
-    'julaybib':{y:1,n:'in Madinah (the book does not say when)'},
+    'fatimah':{y:-12,n:"as a young girl in her father's ﷺ home",c:1},
+    'julaybib':{y:1,n:'in Madinah (the book does not say when)',u:1},
     'maslamah':{y:-2,n:"in Madinah, through Mus'ab ibn Umayr"},
     'musab':{y:-10,n:'at the house of al-Arqam'},
     'rumaysa':{y:-2,n:"in Madinah, through Mus'ab ibn Umayr"},
-    'salim':{y:-10,n:'early, in Makkah, with Abu Hudhayfah'},
+    'salim':{y:-10,n:'early, in Makkah, with Abu Hudhayfah',u:1},
     'suhayl':{y:8,n:'when Makkah was opened'},
     'ubayy':{y:-1,n:'in Madinah, before the second pledge of al-Aqabah'},
-    'abu-hurayra':{y:7,n:'in the land of Daws, through al-Tufayl ibn Amr. Sources differ on when: some say years before, others near the time he came to Madinah, at Khaybar in 7 AH'}
+    'abu-hurayra':{y:7,n:'in the land of Daws, through al-Tufayl ibn Amr. Sources differ on when: some say years before, others near the time he came to Madinah, at Khaybar in 7 AH',u:1}
   };
   function islamLine(p){
     if(p.prophet){return 'First revelation: about '+label(-12)+' · at about the age of 40'}
@@ -709,6 +714,16 @@ body.story-open{overflow:hidden}
         fade(g,p,w,p.x+wobAt(p.i,nSeg(Y(p.born),Y(p.died))),Y(p.died),1);
       }
     });
+    /* A dot where they became Muslim: faded when the year is not sure, and none for those who were children then. */
+    var im=ISLAM[p.id];
+    if(im&&!im.c&&im.y>p.born&&im.y<=p.died){
+      var ya=Y(p.born), yb=Y(p.died), yi=Y(im.y), nn=nSeg(ya,yb), tt=(yi-ya)/(yb-ya)*nn, k0=Math.floor(tt);
+      var xi=p.x+wobAt(p.i,k0)+(wobAt(p.i,k0+1)-wobAt(p.i,k0))*(tt-k0), r=(p.ten||p.wife)?6.5:5;
+      [L.gFut,L.gPast].forEach(function(gg){
+        var dc=el('circle',{class:'mdot'+(im.u?' unsure':''),'data-id':p.id,cx:xi.toFixed(1),cy:yi.toFixed(1),r:r,style:'--c:var(--'+p.g+')'},gg);
+        el('title',{},dc).textContent='Became Muslim: about '+label(im.y)+(im.u?' (not sure of the year)':'');
+      });
+    }
     var g=el('g',{class:'life',tabindex:'0',role:'button','aria-label':p.lab+', born about '+label(p.born)+', died '+label(p.died)+'. Open story.','data-id':p.id},L.gHit);
     el('path',{class:'hit',d:d},g);
     var nt=el('text',{class:'nlabel',transform:'translate('+(p.x-3.2)+' '+(Y(p.died)+(p.dApprox?28:10))+') rotate(90)'},L.gNames);
@@ -724,6 +739,12 @@ body.story-open{overflow:hidden}
     li.innerHTML='<i class="bg-'+k+'" style="height:'+GROUPS[k].w+'px"></i>'+GROUPS[k].label;
     legend.appendChild(li);
   });
+  var lm=document.createElement('li');
+  lm.innerHTML='<b class="lgdot"></b>Became Muslim (no dot if they were a child then)';
+  legend.appendChild(lm);
+  var lu=document.createElement('li');
+  lu.innerHTML='<b class="lgdot unsure"></b>Became Muslim, but the year is not sure';
+  legend.appendChild(lu);
   var lk=document.createElement('li');
   lk.innerHTML='<i class="dots"></i>Not sure exactly · ages are approximate';
   legend.appendChild(lk);
