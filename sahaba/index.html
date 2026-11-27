@@ -69,6 +69,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--ink);outline-of
 
 .legend{list-style:none;margin:14px 0 6px;padding:0;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.8rem;color:var(--ink-soft)}
 .legend li{display:flex;align-items:center;gap:8px}
+.lgbtn{display:flex;align-items:center;gap:8px;font:inherit;color:inherit;background:none;border:1px solid transparent;border-radius:999px;padding:2px 8px 2px 4px;margin:-3px -9px -3px -5px;cursor:pointer}
+.lgbtn:hover{border-color:var(--rule)}
+.lgbtn[aria-pressed="true"]{border-color:var(--ink-soft);background:var(--paper-2);color:var(--ink);font-weight:700}
+.legend.filtered .lgbtn[aria-pressed="false"]{opacity:.45}
+.viewbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:2px 0 8px;font-size:.8rem;color:var(--ink-soft)}
+.vbtn{font:inherit;font-size:.78rem;border:1px solid var(--rule);background:var(--paper-2);color:var(--ink);border-radius:999px;padding:4px 10px;cursor:pointer}
+.vbtn[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .legend i{display:block;width:22px;border-radius:4px}
 .legend i.dots{height:8px;background:linear-gradient(90deg,var(--ink-soft),transparent);border-radius:0}
 .hint{margin:0 0 6px;font-size:.8rem;color:var(--ink-soft)}
@@ -113,9 +120,9 @@ svg.has-sel .ln:not(.sel){opacity:.28}
 .mtext{fill:var(--paper);font:700 10px var(--font-body);text-anchor:middle}
 .dotc{fill:var(--paper);stroke-width:2}
 .mdot{fill:var(--c);stroke:var(--paper);stroke-width:1.8}
-.mdot.unsure{fill:var(--paper);stroke:var(--c);stroke-width:1.6;stroke-dasharray:2.2 1.6}
+.mdot.unsure{fill:color-mix(in srgb,var(--c) 45%,var(--paper))}
 .lgdot{display:inline-block;width:10px;height:10px;box-sizing:border-box;border-radius:50%;background:var(--ink-soft);margin:0 6px;flex:none}
-.lgdot.unsure{background:transparent;border:1.5px dashed var(--ink-soft)}
+.lgdot.unsure{background:color-mix(in srgb,var(--ink-soft) 45%,var(--paper))}
 .dott{fill:var(--ink);font:700 8px var(--font-body);text-anchor:middle}
 
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;max-height:52vh;overflow-y:auto;background:var(--sheet);border-top:1px solid var(--rule);border-radius:18px 18px 0 0;box-shadow:0 -8px 28px rgba(0,0,0,.18);padding-block:14px calc(18px + env(safe-area-inset-bottom,0px));transform:translateY(105%);visibility:hidden;transition:transform .25s ease,visibility 0s .25s}
@@ -233,6 +240,7 @@ body.story-open{overflow:hidden}
 
 <main class="wrap">
   <ul class="legend" id="legend"></ul>
+  <div class="viewbar"><span id="viewnote">Tap a colour to see only those Companions.</span><button type="button" class="vbtn" id="showall" hidden>Show everyone</button><button type="button" class="vbtn" id="hideread" aria-pressed="false">Hide the stories I have read</button></div>
   <p class="hint">Swipe sideways to see everyone. The Prophet ﷺ stays in view. Tap a line to open their story.</p>
   <div class="find" role="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 L21 21"/></svg><input id="find" type="search" placeholder="Find a Companion" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Find a Companion by name" aria-controls="findList" aria-expanded="false"><ul class="findlist" id="findList" hidden></ul></div>
   <div class="chart">
@@ -697,9 +705,28 @@ body.story-open{overflow:hidden}
   el('rect',{class:'mpill',x:2,y:-11,width:50,height:22,rx:11},rMarker);
   var mText=el('text',{class:'mtext',x:27,y:3.5},rMarker);
 
+  /* Which lines are shown: all, or only one colour, and the stories already read can be hidden.
+     The shown lines are packed side by side, then drawn. Saved on this device. */
+  var VIEW={g:null,hideRead:false};
+  try{var sv=JSON.parse(localStorage.getItem('sahabaView')||'null');if(sv){VIEW.g=GROUPS[sv.g]?sv.g:null;VIEW.hideRead=sv.hideRead===true}}catch(e){}
+  function readSet(){try{return JSON.parse(localStorage.getItem('sahabaRead')||'{}')||{}}catch(e){return {}}}
+  function layoutPeople(){
+    var R=readSet(), k=0;
+    PEOPLE.forEach(function(p){
+      p.hide=!p.prophet&&((VIEW.g&&p.g!==VIEW.g)||(VIEW.hideRead&&R[p.id]===1));
+      if(!p.prophet&&!p.hide){p.x=EDGE+STEP*(k+0.5);k++}
+    });
+    var w=EDGE*2+STEP*Math.max(0,k-1)+EXTRA+STEP;
+    W=Math.max(w,scroller.clientWidth);
+    LM.svg.setAttribute('width',W); LM.svg.setAttribute('viewBox','0 0 '+W+' '+H);
+    return k;
+  }
+  function drawPeople(){
+    LAYERS.forEach(function(L){[L.gFut,L.gPast,L.gNames,L.gHit].forEach(function(g){while(g.firstChild){g.removeChild(g.firstChild)}})});
   PEOPLE.forEach(function(p){
     var L=p.prophet?LP:LM;
     p.L=L;
+    if(p.hide){return}
     var d=pathFor(p,Y(p.born),Y(p.died));
     var w=p.prophet?12:((p.ten||p.wife)?9:4.5);
     [L.gFut,L.gPast].forEach(function(g){
@@ -731,19 +758,23 @@ body.story-open{overflow:hidden}
     /* A name that would run off the bottom of the chart uses its shorter form. */
     try{if(Y(p.died)+(p.dApprox?28:10)+nt.getComputedTextLength()>H-2&&p.en){nt.textContent=p.en}}catch(e){}
   });
+  }
+  var nShown=layoutPeople();
+  drawPeople();
 
   /* legend */
   var legend=document.getElementById('legend');
   Object.keys(GROUPS).forEach(function(k){
     var li=document.createElement('li');
-    li.innerHTML='<i class="bg-'+k+'" style="height:'+GROUPS[k].w+'px"></i>'+GROUPS[k].label;
+    if(k==='green'){li.innerHTML='<i class="bg-'+k+'" style="height:'+GROUPS[k].w+'px"></i>'+GROUPS[k].label}
+    else{li.innerHTML='<button type="button" class="lgbtn" data-g="'+k+'" aria-pressed="false" title="Show only these"><i class="bg-'+k+'" style="height:'+GROUPS[k].w+'px"></i>'+GROUPS[k].label+'</button>'}
     legend.appendChild(li);
   });
   var lm=document.createElement('li');
   lm.innerHTML='<b class="lgdot"></b>Became Muslim (no dot if they were a child then)';
   legend.appendChild(lm);
   var lu=document.createElement('li');
-  lu.innerHTML='<b class="lgdot unsure"></b>Became Muslim, but the year is not sure';
+  lu.innerHTML='<b class="lgdot unsure"></b>Lighter dot: the year they became Muslim is not sure';
   legend.appendChild(lu);
   var lk=document.createElement('li');
   lk.innerHTML='<i class="dots"></i>Not sure exactly · ages are approximate';
@@ -751,6 +782,39 @@ body.story-open{overflow:hidden}
   var lt=document.createElement('li');
   lt.innerHTML='<i style="height:9px;background:var(--ink-soft)"></i>Thicker line: the ten promised Paradise, and the wives of the Prophet ﷺ';
   legend.appendChild(lt);
+
+  /* Show only one colour, and hide the stories already read. */
+  var showAll=document.getElementById('showall'), hideReadBtn=document.getElementById('hideread'), viewNote=document.getElementById('viewnote');
+  function nRead(){var R=readSet(),n=0;PEOPLE.forEach(function(p){if(R[p.id]===1){n++}});return n}
+  function viewUI(){
+    var bs=legend.querySelectorAll('.lgbtn');
+    for(var i=0;i<bs.length;i++){bs[i].setAttribute('aria-pressed',String(bs[i].getAttribute('data-g')===VIEW.g))}
+    legend.classList.toggle('filtered',!!VIEW.g);
+    var nr=nRead();
+    hideReadBtn.setAttribute('aria-pressed',String(VIEW.hideRead));
+    hideReadBtn.textContent=VIEW.hideRead?'Show the stories I have read ('+nr+')':'Hide the stories I have read'+(nr?' ('+nr+')':'');
+    showAll.hidden=!VIEW.g&&!VIEW.hideRead;
+    var parts=[];
+    if(VIEW.g){parts.push('Showing only: '+GROUPS[VIEW.g].label)}
+    if(VIEW.hideRead){parts.push(nr?'stories you have read are hidden':'you have not finished any stories yet')}
+    viewNote.textContent=parts.length?parts.join(' · ')+(nShown?'':' · no one left to show'):'Tap a colour to see only those Companions.';
+  }
+  function applyView(){
+    try{localStorage.setItem('sahabaView',JSON.stringify(VIEW))}catch(e){}
+    nShown=layoutPeople(); drawPeople(); viewUI();
+    if(state.sel){markSelected(state.sel)}
+    setMarker(state.m,false);
+    scroller.scrollTo({left:0});
+  }
+  legend.addEventListener('click',function(e){
+    var b=e.target.closest('.lgbtn'); if(!b){return}
+    var g=b.getAttribute('data-g'); VIEW.g=VIEW.g===g?null:g; applyView();
+  });
+  showAll.addEventListener('click',function(){VIEW.g=null;VIEW.hideRead=false;applyView()});
+  hideReadBtn.addEventListener('click',function(){VIEW.hideRead=!VIEW.hideRead;applyView()});
+  /* A story counts as read when its last page is reached (sent from the story reader below). */
+  window.addEventListener('sahaba-read',function(){if(VIEW.hideRead){applyView()}else{viewUI()}});
+  viewUI();
 
   /* event chips */
   var chips=document.getElementById('chips');
@@ -780,7 +844,7 @@ body.story-open{overflow:hidden}
     mText.textContent=label(v);
     var alive=0;
     PEOPLE.forEach(function(p){
-      if(v>=p.born&&v<=p.died){
+      if(!p.hide&&v>=p.born&&v<=p.died){
         alive++;
         el('circle',{class:'dotc c-'+p.g,'data-id':p.id,cx:p.x,cy:my,r:9.5},p.L.gDots);
         var tt=el('text',{class:'dott',x:p.x,y:my+3},p.L.gDots);
@@ -789,7 +853,7 @@ body.story-open{overflow:hidden}
     });
     document.getElementById('yr').textContent=v===0?'Hijra':(v<0?(-v)+' years before the Hijra':'Year '+v+' AH');
     document.getElementById('evt').textContent=eventsAt(v).join(' · ');
-    document.getElementById('count').textContent=alive+' of '+PEOPLE.length+' alive';
+    document.getElementById('count').textContent=alive+' of '+(nShown+1)+' alive';
     var cs=chips.querySelectorAll('.chip');
     for(var i=0;i<cs.length;i++){cs[i].setAttribute('aria-pressed',String(Number(cs[i].getAttribute('data-v'))===v))}
     if(scroll){
@@ -904,7 +968,7 @@ body.story-open{overflow:hidden}
     function hide(){list.hidden=true;inp.setAttribute('aria-expanded','false')}
     var bar=document.querySelector('.bar'),wrap=inp.parentNode,chart=document.querySelector('.chart');
     function scrollUnderBar(node){window.scrollTo({top:Math.max(0,node.getBoundingClientRect().top+window.pageYOffset-bar.offsetHeight-8),behavior:'smooth'})}
-    function pick(p){inp.value='';hide();inp.blur();scrollUnderBar(chart);openSheet(p)}
+    function pick(p){inp.value='';hide();inp.blur();if(p.hide){VIEW.g=null;VIEW.hideRead=false;applyView()}scrollUnderBar(chart);openSheet(p)}
     inp.addEventListener('input',show);
     inp.addEventListener('focus',function(){scrollUnderBar(wrap);if(inp.value){show()}});
     inp.addEventListener('keydown',function(e){
@@ -3029,6 +3093,8 @@ body.story-open{overflow:hidden}
     sDots.innerHTML=dots;
     sPrev.disabled=ST.page===0;
     sNext.textContent=ST.page===ST.pages.length-1?'Finish':'Next';
+    /* Reaching the last page counts as having read the story. */
+    if(ST.page===ST.pages.length-1&&ST.id!=='prophet'){var R=readSet();if(R[ST.id]!==1){R[ST.id]=1;try{localStorage.setItem('sahabaRead',JSON.stringify(R))}catch(e){}window.dispatchEvent(new Event('sahaba-read'))}}
   }
   function goPage(n){stopSpeak();ST.page=Math.max(0,Math.min(ST.pages.length-1,n));ST.msg='';renderStory(true)}
 
